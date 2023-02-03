@@ -78,6 +78,7 @@
                         @click="downloadPacking()"
                         depressed
                         outlined
+                        data-unq="packingorder.button.export"
                         v-privilege="'pc_exp'"
                         color="#EBEBEB"
                         class="no-caps bold bg-white-btn"
@@ -113,6 +114,7 @@
                                 <v-btn
                                     depressed
                                     color="#50ABA3"
+                                    data-unq="packingorder.button.0.25"
                                     :disabled="item.actual_total_pack === item.expected_total_pack ? !disabledBtn : disabledBtn"
                                     @click="weighScale(props.item.product.id,item.pack_type)"
                                     class="no-caps bold"
@@ -136,6 +138,7 @@
                                 <v-btn
                                     depressed
                                     color="#50ABA3"
+                                    data-unq="packingorder.button.0.5"
                                     :disabled="item.actual_total_pack === item.expected_total_pack ? !disabledBtn : disabledBtn"
                                     @click="weighScale(props.item.product.id,item.pack_type)"
                                     class="no-caps bold"
@@ -159,6 +162,7 @@
                                 <v-btn
                                     depressed
                                     color="#50ABA3"
+                                    data-unq="packingorder.button.1"
                                     :disabled="item.actual_total_pack === item.expected_total_pack ? !disabledBtn : disabledBtn"
                                     @click="weighScale(props.item.product.id,item.pack_type)"
                                     class="no-caps bold"
@@ -182,6 +186,7 @@
                                 <v-btn
                                     depressed
                                     color="#50ABA3"
+                                    data-unq="packingorder.button.2"
                                     :disabled="item.actual_total_pack === item.expected_total_pack ? !disabledBtn : disabledBtn"
                                     @click="weighScale(props.item.product.id,item.pack_type)"
                                     class="no-caps bold"
@@ -205,6 +210,7 @@
                                 <v-btn
                                     depressed
                                     color="#50ABA3"
+                                    data-unq="packingorder.button.5"
                                     :disabled="item.actual_total_pack === item.expected_total_pack ? !disabledBtn : disabledBtn"
                                     @click="weighScale(props.item.product.id,item.pack_type)"
                                     class="no-caps bold"
@@ -228,6 +234,7 @@
                                 <v-btn
                                     depressed
                                     color="#50ABA3"
+                                    data-unq="packingorder.button.10"
                                     :disabled="item.actual_total_pack === item.expected_total_pack ? !disabledBtn : disabledBtn"
                                     @click="weighScale(props.item.product.id,item.pack_type)"
                                     class="no-caps bold"
@@ -251,6 +258,7 @@
                                 <v-btn
                                     depressed
                                     color="#50ABA3"
+                                    data-unq="packingorder.button.20"
                                     :disabled="item.actual_total_pack === item.expected_total_pack ? !disabledBtn : disabledBtn"
                                     @click="weighScale(props.item.product.id,item.pack_type)"
                                     class="no-caps bold"

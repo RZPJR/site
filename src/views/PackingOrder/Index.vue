@@ -11,6 +11,7 @@
                                 outlined
                                 filled
                                 placeholder="Search..."
+                                data-unq="packingorder.search"
                                 prepend-inner-icon="search"
                                 v-on="{ ...tooltip }"
                             >
@@ -29,6 +30,7 @@
                         x-small
                         @click="showFilter = !showFilter"
                         v-if="showFilter"
+                        data-unq="packingorder.hidefilter"
                         class="no-caps fs12"
                     >
                         Hide
@@ -43,6 +45,7 @@
                         x-small
                         @click="showFilter = !showFilter"
                         v-else
+                        data-unq="packingorder.showfilter"
                         class="no-caps fs12"
                     >
                         Show
@@ -70,6 +73,7 @@
                                     prepend-inner-icon="mdi-calendar"
                                     outlined
                                     name="filter_delivery_date"
+                                    data-unq="packingorder.deliverydate"
                                     clearable
                                     @click:clear="delivery_date = [],fetchPackingOrderList()"
                                     v-model="delivery_date.input"
@@ -91,6 +95,7 @@
                             <v-btn
                                 text
                                 color="primary"
+                                data-unq="packingorder.deliverydate.ok"
                                 @click="delivery_date.model = false,fetchPackingOrderList()"
                             >
                                 OK
@@ -104,6 +109,7 @@
                         :aux_data="2"
                         name="filter_warehouse"
                         :label="'Site'"
+                        data-unq="packingorder.filter.warehouse"
                         @selected="warehouseSelected"
                         :dense="true"
                     ></SelectWarehouse>
@@ -112,6 +118,7 @@
                     <v-select
                         v-model="filter.statuses"
                         :items="filter.status2"
+                        data-unq="packingorder.filter.status"
                         name="filter_status"
                         item-text="text"
                         item-value="value"
@@ -129,6 +136,7 @@
                         color="#50ABA3"
                         :to="{ name: 'PackingOrderCreate' }"
                         class="no-caps bold mr-4"
+                        data-unq="packingorder.button.generatepacking"
                         v-privilege="'prd_crt'"
                     >
                         <span class="text-white">
@@ -140,6 +148,7 @@
                         color="#50ABA3"
                         :to="{ name: 'PackList' }"
                         class="no-caps bold"
+                        data-unq="packingorder.button.packlist"
                         v-privilege="'pc_pk_rdl'"
                     >
                         <span class="text-white">
@@ -187,11 +196,12 @@
                             <template v-slot:activator="{ on: menu }">
                                 <v-btn
                                     icon
+                                    data-unq="packingorder.button.menu"
                                     v-on="{ ...menu }"
                                 ><v-icon dark>mdi-dots-vertical</v-icon></v-btn>
                             </template>
                             <v-list class="bg-white">
-                                <v-list-item  :to="`/site/packing-order/detail/${props.item.id}`" v-privilege="'pc_rdd'">
+                                <v-list-item data-unq="packingorder.button.detail"  :to="`/site/packing-order/detail/${props.item.id}`" v-privilege="'pc_rdd'">
                                     <v-list-item-content>
                                             <v-list-item-title>Detail</v-list-item-title>
                                         </v-list-item-content>
