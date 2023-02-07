@@ -7,9 +7,10 @@
                         <template v-slot:activator="{ on: tooltip }" v-privilege="'filter_rdl'">
                             <v-text-field
                                 dense
-                                v-model="search"
+                                v-model="filter.search"
                                 outlined
                                 filled
+                                data-unq="packingorder-input-search"
                                 placeholder="Search..."
                                 prepend-inner-icon="search"
                                 v-on="{ ...tooltip }"
@@ -27,8 +28,9 @@
                     <v-btn 
                         depressed
                         x-small
-                        @click="filter = !filter"
-                        v-if="filter"
+                        @click="showFilter = !showFilter"
+                        v-if="showFilter"
+                        data-unq="packingorder-button-hide"
                         class="no-caps fs12"
                     >
                         Hide
@@ -41,8 +43,9 @@
                     <v-btn 
                         depressed
                         x-small
-                        @click="filter = !filter"
+                        @click="showFilter = !showFilter"
                         v-else
+                        data-unq="packingorder-button-show"
                         class="no-caps fs12"
                     >
                         Show
@@ -54,11 +57,11 @@
                     </v-btn>
                 </v-col>
             </v-row>
-            <v-row :class="filter? '':'hidden'">
+            <v-row v-if="showFilter">
                 <v-col cols="12" md="3" class="-mt24">
                     <v-menu
                         ref="menu"
-                        v-model="delivery_date_model"
+                        v-model="delivery_date.model"
                         :close-on-content-click="false"
                         transition="scale-transition"
                         offset-y
@@ -71,8 +74,9 @@
                                     outlined
                                     name="filter_delivery_date"
                                     clearable
-                                    @click:clear="delivery_date = [],renderData(search)"
-                                    v-model="delivery_date_input"
+                                    data-unq="packingorder-filter-deliveryDate"
+                                    @click:clear="delivery_date.value = [],fetchPackList()"
+                                    v-model="delivery_date.input"
                                     maxlength="24"
                                     dense
                                 >
@@ -85,13 +89,14 @@
                         <v-date-picker
                             range
                             persistent-hint
-                            v-model="delivery_date"
+                            v-model="delivery_date.value"
                         >
                         <v-spacer></v-spacer>
                             <v-btn
                                 text
                                 color="primary"
-                                @click="delivery_date_model = false,renderData(search)"
+                                data-unq="packingorder-filter-deliveryDateOK"
+                                @click="delivery_date.model = false,fetchPackList()"
                             >
                                 OK
                             </v-btn>
@@ -102,7 +107,9 @@
                     <SelectWarehouse
                         :norequired="true"
                         :aux_data="2"
+                        :label="'Site'"
                         name="filter_warehouse"
+                        data-unq="packingorder-filter-site"
                         @selected="warehouseSelected"
                         :dense="true"
                     ></SelectWarehouse>
@@ -111,6 +118,8 @@
                     <SelectProduct
                         :norequired="true"
                         name:="filter_product"
+                        :label="'Item'"
+                        data-unq="packingorder-filter-item"
                         :dense="true"
                         @selected="productSelected"
                     ></SelectProduct>
@@ -119,40 +128,43 @@
         </div>
         <div class="box-body-table">
             <v-data-table
-            :headers="table.fields"
-            :items="items"
-            :loading="loading"
+            :headers="table_header"
+            :items="pack_list.data"
+            :loading="pack_list.isLoading"
             :items-per-page="10"
         >
             <template v-slot:item="props">
                 <tr style="height:48px">
-                    <td>{{ props.item.packing_order.code }}</td>
-                    <td>{{ props.item.packing_order.warehouse.code }} - {{ props.item.packing_order.warehouse.name }}</td>
-                    <td>{{ props.item.code }}</td>
-                    <td>{{ props.item.product.name }} <br>
+                    <td :data-unq="`packlist-value-pcoCode-${props.index}`">{{ props.item.packing_order.code }}</td>
+                    <td :data-unq="`packlist-value-site-${props.index}`">{{ props.item.packing_order.site.code }} - {{ props.item.packing_order.site.name }}</td>
+                    <td :data-unq="`packlist-value-code-${props.index}`">{{ props.item.code }}</td>
+                    <td :data-unq="`packlist-value-item-${props.index}`">{{ props.item.item.name }} <br>
                         <span class="text-black60">
-                            {{ props.item.product.code }}
+                            {{ props.item.item.code }}
                         </span>
                     </td>
-                    <td>{{ props.item.product.uom.name }}</td>
-                    <td>{{ props.item.pack_type }}</td>
-                    <td>{{ props.item.weight_scale }}</td>
-                    <td>{{ formatDate(props.item.packing_order.delivery_date) }}</td>
+                    <td :data-unq="`packlist-value-uom-${props.index}`">{{ props.item.item.uom.name }}</td>
+                    <td :data-unq="`packlist-value-packType-${props.index}`">{{ props.item.pack_type }}</td>
+                    <td :data-unq="`packlist-value-weightScale-${props.index}`">{{ props.item.weight_scale }}</td>
+                    <td :data-unq="`packlist-value-deliveryDate-${props.index}`">{{ formatDate(props.item.packing_order.delivery_date) }}</td>
                     <td>
                         <div v-if="props.item.status == 1">
                             <v-chip
+                                :data-unq="`packlist-value-status-active-${props.index}`"
                                 :color="statusMaster('active')"
                                 :text-color="statusMasterText('active')"
                             ><span class="pa-md-2">Active</span></v-chip>
                         </div>
                         <div v-else-if="props.item.status == 2">
                             <v-chip
+                                :data-unq="`packlist-value-status-finished-${props.index}`"
                                 :color="statusMaster('finished')"
                                 :text-color="statusMasterText('finished')"
                             ><span class="pa-md-2">Finished</span></v-chip>
                         </div>
                         <div v-else-if="props.item.status == 3">
                             <v-chip
+                                :data-unq="`packlist-value-status-cancelled-${props.index}`"
                                 :color="statusMaster('cancelled')"
                                 :text-color="statusMasterText('cancelled')"
                             ><span class="pa-md-2"> Cancelled </span></v-chip>
@@ -162,12 +174,13 @@
                         <v-menu offset-y>
                             <template v-slot:activator="{ on: menu }">
                                 <v-btn
+                                    :data-unq="`packlist-button-menu-${props.index}`"
                                     icon
                                     v-on="{ ...menu }"
                                 ><v-icon dark>mdi-dots-vertical</v-icon></v-btn>
                             </template>
                             <v-list v-if="props.item.status !== 3" class="bg-white">
-                                <v-list-item  @click="printLabel(props.item.packing_order.id,props.item.product.id,props.item.pack_type)" v-privilege="'pc_prt'">
+                                <v-list-item :data-unq="`packlist-button-reprint-${props.index}`" @click="printLabel(props.item.packing_order.id,props.item.item.id,props.item.pack_type)" v-privilege="'pc_prt'">
                                     <v-list-item-content>
                                         <v-list-item-title>Reprint</v-list-item-title>
                                     </v-list-item-content>
@@ -176,7 +189,7 @@
                                     </v-list-item-icon>
                                 </v-list-item>
                                 <hr />
-                                <v-list-item @click="disposePopup(props.item.packing_order.id,props.item.product.id,props.item.pack_type,props.item.packing_order.code)" v-privilege="'pc_del'">
+                                <v-list-item :data-unq="`packlist-button-dispose-${props.index}`" @click="disposePopup(props.item.packing_order.id,props.item.item.id,props.item.pack_type,props.item.packing_order.code)" v-privilege="'pc_del'">
                                     <v-list-item-content>
                                         <v-list-item-title>Dispose</v-list-item-title>
                                     </v-list-item-content>
@@ -215,6 +228,7 @@
                         @click="disposeModal = false"
                         depressed
                         outlined
+                        data-unq="packingorder-button-no"
                         color="#EBEBEB"
                         class="main-btn"
                     >
@@ -224,6 +238,7 @@
                         @click="disposePacking()"
                         class="main-btn white--text"
                         depressed
+                        data-unq="packingorder-button-yes"
                         color="#50ABA3"
                     >Yes</v-btn>
                 </v-card-actions>
@@ -233,6 +248,7 @@
     </v-container>
 </template>
 <script>
+    import { mapState, mapActions } from "vuex";
     import Vue from 'vue'
     export default {
         name: "PackList",
@@ -241,70 +257,8 @@
                 overlay: false,
                 loadingDispose: false,
                 disposeModal: false,
-                search: '',
-                filter: false,
-                delivery_date_input : new Date(Date.now() + ( 3600 * 1000 * 7)).toISOString().substr(0, 10),
-                delivery_date_model : '',
-                delivery_date : [new Date(Date.now() + ( 3600 * 1000 * 7)).toISOString().substr(0, 10)],
+                showFilter: false,
                 loading: false,
-                table: {
-                    fields: [
-                        {
-                            text:'Packing Order Code',
-                            class: 'grey--text text--darken-4',
-                            sortable: false,
-                        },
-                        {
-                            text:'Warehouse',
-                            class: 'grey--text text--darken-4',
-                            sortable: false
-                        },
-                        {
-                            text:'Pack Code',
-                            class: 'grey--text text--darken-4',
-                            sortable: false
-                        },
-                        {
-                            text:'Product',
-                            class: 'grey--text text--darken-4',
-                            sortable: false
-                        },
-                        {
-                            text:'UOM',
-                            class: 'grey--text text--darken-4',
-                            sortable: false
-                        },
-                        {
-                            text:'Expected Size',
-                            class: 'grey--text text--darken-4',
-                            sortable: false
-                        },
-                        {
-                            text:'Actual Size',
-                            class: 'grey--text text--darken-4',
-                            sortable: false
-                        },
-                        {
-                            text:'Packing Date',
-                            class: 'grey--text text--darken-4',
-                            sortable: false
-                        },
-                        {
-                            text:'Status',
-                            class: 'grey--text text--darken-4',
-                            width: "10%",
-                            sortable: false
-                        },
-                        {
-                            width: "5%",
-                            class: 'grey--text text--darken-4',
-                            sortable: false
-                        },
-                    ],
-                },
-                items:[],
-                SelectWarehouse : '',
-                SelectProduct: '',
                 overlay: false,
                 PackingId: '',
                 ProductId: '',
@@ -318,50 +272,20 @@
             this.printConnection()
         },
         mounted() {
-            this.renderData('')
+            this.fetchPackList()
+        },
+        computed: {
+            ...mapState({
+                pack_list: state => state.packingOrder.pack_list,
+                table_header: state => state.packingOrder.pack_list.table_headers,
+                filter: state => state.packingOrder.pack_list.filter,
+                delivery_date: state => state.packingOrder.pack_list.filter.delivery_date,
+            }),
         },
         methods: {
-            //render data to table
-            renderData(search){
-                let warehouse = ''
-                if (this.SelectWarehouse) {
-                    warehouse = this.SelectWarehouse
-                }
-                let product = ''
-                if (this.SelectProduct) {
-                    product = this.SelectProduct
-                }
-                let delivery_date = ''
-                if (this.delivery_date.length > 0) {
-                    if (this.delivery_date.length == 1) {
-                        delivery_date = this.delivery_date[0]+'|'+this.delivery_date[0]
-                    } else {
-                        let date = this.delivery_date[0]
-                        let date2 = this.delivery_date[1]
-                        if (date > date2) {
-                            delivery_date = date2+'|'+date
-                        } else {
-                            delivery_date = date+'|'+date2
-                        }
-                    }
-                }
-                this.loading = true;
-                this.items = []
-                this.$http.get("/warehouse/packing_order/recommendation/pack",{params:{
-                        perpage:10,
-                        warehouse: warehouse,
-                        product: product,
-                        packing_date: delivery_date,
-                        queryString: search,
-                        orderby:'-id',
-                    }}).then(response => {
-                    this.loading = false
-                    this.items = response.data.data
-                    if(this.items === null){
-                        this.items = []
-                    }
-                });
-            },
+            ...mapActions ([
+                'fetchPackList',
+            ]),
             disposePopup(pc_id,prd_id,pack,code){
                 this.PackingId = pc_id
                 this.ProductId = prd_id
@@ -382,7 +306,7 @@
                         message: 'Success to dispose',
                         type: 'success',
                     });
-                    this.renderData(this.search)
+                    this.fetchPackList()
                     this.loadingDispose = false
                     this.disposeModal = false
                 })
@@ -444,40 +368,40 @@
             },
             //select warehouse by d
             warehouseSelected(d) {
-                this.SelectWarehouse = ""
+                this.filter.SelectWarehouse = ""
                 if (d) {
                     this.SelectWarehouse = d.id
                 }
-                this.renderData(this.search)
+                this.fetchPackList()
             },
             //select warehouse by id
             productSelected(d) {
-                this.SelectProduct = ""
+                this.filter.SelectProduct = ""
                 if (d) {
                     this.SelectProduct = d.id
                 }
-                this.renderData(this.search)
+                this.fetchPackList()
             },
         },
         watch: {
-            'search': {
+            'filter.search': {
                 handler: function (val) {
                     let that = this
                     clearTimeout(this._timerId)
                     this._timerId = setTimeout(function(){
-                        that.renderData(val, that.statuses)
+                        that.fetchPackList()
                     }, 1000);
                 },
                 deep: true
             },
-            'delivery_date_input': {
+            'delivery_date.input': {
                 handler: function (val) {
                     if (val) {
                         if (val.length == 10) {
                             let valid = this.$moment(val, 'YYYY-MM-DD', true).isValid()
                             if (valid == true) {
-                                this.delivery_date[0] = this.$moment(val).format('YYYY-MM-DD')
-                                this.renderData(this.search)
+                                this.delivery_date.value[0] = this.$moment(val).format('YYYY-MM-DD')
+                                this.fetchPackList()
                             }
                         } else if (val.length == 24) {
                             let date1 = val.substr(0,10)
@@ -485,17 +409,17 @@
                             let valid1 = this.$moment(date1, 'YYYY-MM-DD', true).isValid()
                             let valid2 = this.$moment(date2, 'YYYY-MM-DD', true).isValid()
                             if (valid1 == true && valid2 == true) {
-                                let date3 = new Date(this.delivery_date[0])
-                                let date4 = new Date(this.delivery_date[1])
+                                let date3 = new Date(this.delivery_date.value[0])
+                                let date4 = new Date(this.delivery_date.value[1])
                                 if (parseInt((date4-date3)/(24*3600*1000)) > 6 || parseInt((date4-date3)/(24*3600*1000)) < -6) {
                                     if (date4 < date3) {
-                                        this.delivery_date[0] = this.$moment(date3).format('YYYY-MM-DD')
-                                        this.delivery_date.splice(1,1)
+                                        this.delivery_date.value[0] = this.$moment(date3).format('YYYY-MM-DD')
+                                        this.delivery_date.value.splice(1,1)
                                     } else {
-                                        this.delivery_date[0] = this.$moment(date3).format('YYYY-MM-DD')
-                                        this.delivery_date.splice(1,1)
+                                        this.delivery_date.value[0] = this.$moment(date3).format('YYYY-MM-DD')
+                                        this.delivery_date.value.splice(1,1)
                                     }
-                                    this.renderData(this.search)
+                                    this.fetchPackList()
                                 } 
                             }
                         }
@@ -503,7 +427,7 @@
                 },
                 deep: true
             },
-            'delivery_date': {
+            'delivery_date.value': {
                 handler: function (val) {
                     if (val) {
                         this.delivery_date_input = this.formatDateRange(val)

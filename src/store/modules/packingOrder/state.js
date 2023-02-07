@@ -120,6 +120,82 @@ const state = {
     ],
     data : [],
     WeighScale: {}
+  },
+
+  packing_order_create: {
+    form : {
+        delivery_date:new Date(Date.now() + ( 3600 * 1000 * 7)).toISOString().substr(0, 10),
+        site_id:"",
+        note:"",
+    },
+  },
+
+  pack_list: {
+    isLoading: false,
+    filter: {
+        search: '',
+        SelectWarehouse : '',
+        SelectProduct: '',
+        delivery_date: {
+            input: new Date(Date.now() + ( 3600 * 1000 * 7)).toISOString().substr(0, 10),
+            model: '',
+            value: [new Date(Date.now() + ( 3600 * 1000 * 7)).toISOString().substr(0, 10)],
+        }
+    },
+    table_headers: [
+        {
+            text:'Packing Order Code',
+            class: 'grey--text text--darken-4',
+            sortable: false,
+        },
+        {
+            text:'Site',
+            class: 'grey--text text--darken-4',
+            sortable: false
+        },
+        {
+            text:'Pack Code',
+            class: 'grey--text text--darken-4',
+            sortable: false
+        },
+        {
+            text:'Item',
+            class: 'grey--text text--darken-4',
+            sortable: false
+        },
+        {
+            text:'UOM',
+            class: 'grey--text text--darken-4',
+            sortable: false
+        },
+        {
+            text:'Expected Size',
+            class: 'grey--text text--darken-4',
+            sortable: false
+        },
+        {
+            text:'Actual Size',
+            class: 'grey--text text--darken-4',
+            sortable: false
+        },
+        {
+            text:'Packing Date',
+            class: 'grey--text text--darken-4',
+            sortable: false
+        },
+        {
+            text:'Status',
+            class: 'grey--text text--darken-4',
+            width: "10%",
+            sortable: false
+        },
+        {
+            width: "5%",
+            class: 'grey--text text--darken-4',
+            sortable: false
+        },
+    ],
+    data: [],
   }
 };
 

@@ -18,9 +18,10 @@
                                     prepend-inner-icon="mdi-calendar"
                                     outlined
                                     clearable
+                                    data-unq="packingorder-filter-deliverydate"
                                     maxlength="10"
                                     onkeypress="return event.charCode >= 48 && event.charCode <= 57 || event.charCode == 45"
-                                    @click:clear="form.delivery_date = '',getProduct()"
+                                    @click:clear="form.delivery_date = ''"
                                     :error-messages="error.delivery_date"
                                     v-model="form.delivery_date"
                                     dense
@@ -33,7 +34,7 @@
                         </template>
                         <v-date-picker
                             v-model="form.delivery_date"
-                            @input="delivery_date_model = false,getProduct()"
+                            @input="delivery_date_model = false"
                         ></v-date-picker>
                     </v-menu>
                 </v-col>
@@ -42,6 +43,8 @@
                         name="area"
                         @selected="areaSelected"
                         :aux_data="2"
+                        :label="'Region'"
+                        data-unq="packingorder-filter-region"
                         :area="area"
                         :error="error.area_id"
                         :dense="true"
@@ -50,7 +53,9 @@
                 <v-col cols="12" md="6" class="-mt24">
                     <SelectWarehouse
                         name="warehouse"
+                        :label="'Site'"
                         :aux_data="2"
+                        data-unq="packingorder-filter-site"
                         :area_id="form.area_id"
                         :warehouse="warehouse"
                         :disabled="warehouseDis"
@@ -65,6 +70,7 @@
                         v-model="form.note"
                         :counter="350"
                         outlined
+                        data-unq="packingorder-input-note"
                         :error-messages="error.note"
                         required
                         dense
@@ -86,6 +92,7 @@
                         depressed
                         outlined
                         color="#EBEBEB"
+                        data-unq="packingorder-button-cancel"
                         class="main-btn"
                         v-privilege="'pc_rdl'"
                     >
@@ -94,6 +101,7 @@
                     <v-btn
                         @click="confirmButton()"
                         depressed
+                        data-unq="packingorder-button-save"
                         color="#50ABA3"
                         class="main-btn white--text"
                         v-privilege="'pco_crt'"
@@ -106,55 +114,26 @@
     </v-container>
 </template>
 <script>
-    import Vue from 'vue'
+    import { mapState, mapActions } from "vuex";
     export default {
         name: 'CreateGoodsTransfer',
         data () {
             return {
-                form : {
-                    delivery_date:new Date(Date.now() + ( 3600 * 1000 * 7)).toISOString().substr(0, 10),
-                    warehouse_id:"",
-                    note:"",
-                },
-                table: {
-                    fields: [
-                        {
-                            text:'Product Name',
-                            class: 'grey--text text--darken-4',
-                            sortable: false,
-                        },
-                        {
-                            text:'UOM',
-                            class: 'grey--text text--darken-4',
-                            sortable: false
-                        },
-                        {
-                            text:'Sales Order Qty',
-                            class: 'grey--text text--darken-4',
-                            sortable: false
-                        },
-                        {
-                            text:'Available Qty',
-                            class: 'grey--text text--darken-4',
-                            sortable: false
-                        },
-                        {
-                            text:'Packer',
-                            class: 'grey--text text--darken-4',
-                            width: "40%",
-                            sortable: false
-                        },
-                    ],
-                },
                 error : {},
                 success : {},
                 ConfirmData : {},
                 area : '',
+                area_id: '',
                 warehouse : '',
                 warehouseDis : true,
                 delivery_date_model : '',
                 productIdx : ''
             }
+        },
+        computed: {
+            ...mapState({
+                form: state => state.packingOrder.packing_order_create.form,
+            }),
         },
         mounted () {
             let self = this
@@ -175,23 +154,23 @@
                 }
             },
             areaSelected(d) {
-                this.form.area_id = ""
+                this.area_id = ""
                 this.warehouse = ""
                 this.area = ""
-                this.form.warehouse_id = ""
+                this.form.site_id = ""
                 this.warehouseDis = true
                 if (d) {
                     this.area = d
-                    this.form.area_id = d.id
+                    this.area_id = d.id
                     this.warehouseDis = false
                 }
             },
             warehouseSelected(d) {
-                this.form.warehouse_id = ""
+                this.form.site_id = ""
                 this.warehouse = ""
                 if (d) {
                     this.warehouse = d
-                    this.form.warehouse_id = d.id
+                    this.form.site_id = d.id
                 }
             },
         }
