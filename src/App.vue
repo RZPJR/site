@@ -1,20 +1,14 @@
 <template>
-  <v-app>
-    <div id="microApp">
-      <v-main>
-        <BreadcrumbsNew v-if="$route.meta.breadcrumbs"/>
-        <router-view></router-view>
-      </v-main>
-    </div>
-  </v-app>
+    <v-app>
+        <div id="microApp">
+            <v-main>
+                <router-view></router-view>
+            </v-main>
+        </div>
+    </v-app>
 </template>
-
 <script>
-    import BreadcrumbsNew from "./components/BreadcrumbsNew.vue";
-    export default {
-        name: "App",
-        components: {
-            BreadcrumbsNew
-        },
-    };
+export default {
+    watch: { '$route' (val) { localStorage.setItem("route", JSON.stringify(val)); } },
+}
 </script>
