@@ -2,7 +2,7 @@
     <v-container fill-height class="main-container">
         <div class="box-start">
             <v-row class="mt24">
-                <v-col cols="12" md="6" class="-mt24">
+                <v-col cols="12" md="6" class="mt24">
                     <v-menu
                         ref="menu"
                         v-model="delivery_date_model"
@@ -38,7 +38,7 @@
                         ></v-date-picker>
                     </v-menu>
                 </v-col>
-                <v-col cols="12" md="6" class="-mt24">
+                <v-col cols="12" md="6" class="mt24">
                     <SelectArea
                         name="area"
                         @selected="areaSelected"
@@ -104,13 +104,13 @@
                         data-unq="packingorder-button-save"
                         color="#50ABA3"
                         class="main-btn white--text"
-                        v-privilege="'pco_crt'"
+                        v-privilege="'pc_crt'"
                     >Save</v-btn>
                 </v-card-actions>
                 </v-col>
             </v-row>
         </div>
-        <ConfirmationDialog :sendData="ConfirmData"/>
+        <ConfirmationDialogNew :sendData="ConfirmData"/>
     </v-container>
 </template>
 <script>
@@ -130,6 +130,9 @@
                 productIdx : ''
             }
         },
+        created() {
+            this.createPackingOrder()
+        },
         computed: {
             ...mapState({
                 form: state => state.packingOrder.packing_order_create.form,
@@ -142,13 +145,16 @@
             });
         },
         methods:{
+            ...mapActions([
+                "createPackingOrder"
+            ]),
             confirmButton() {
                 this.ConfirmData = {
                     model : true,
-                    title : "Create Packing Order",
+                    title : "Generate Packing Order",
                     text : "Are you sure want to generate this packing order?",
-                    urlApi : "/warehouse/packing_order/recommendation/generate",
-                    nextPage : "/warehouse/packing-order",
+                    urlApi : "/site/v1/packing_order",
+                    nextPage : "/site/packing-order",
                     data : this.form,
                     post : true
                 }
@@ -158,10 +164,12 @@
                 this.warehouse = ""
                 this.area = ""
                 this.form.site_id = ""
+                this.form.region_id = ""
                 this.warehouseDis = true
                 if (d) {
                     this.area = d
                     this.area_id = d.id
+                    this.form.region_id = d.id
                     this.warehouseDis = false
                 }
             },
