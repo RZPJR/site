@@ -58,7 +58,7 @@
                 </v-col>
             </v-row>
             <v-row v-if="showFilter">
-                <v-col cols="12" md="3" class="-mt24">
+                <v-col cols="12" md="3" class="mt24">
                     <v-menu
                         ref="menu"
                         v-model="delivery_date.model"
@@ -103,7 +103,7 @@
                         </v-date-picker>
                     </v-menu>
                 </v-col>
-                <v-col cols="12" md="3" class="-mt24">
+                <v-col cols="12" md="3" class="mt24">
                     <SelectWarehouse
                         :norequired="true"
                         :aux_data="2"
@@ -114,7 +114,7 @@
                         :dense="true"
                     ></SelectWarehouse>
                 </v-col>
-                <v-col cols="12" md="3" class="-mt24">
+                <v-col cols="12" md="3" class="mt24">
                     <SelectProduct
                         :norequired="true"
                         name:="filter_product"
@@ -136,7 +136,7 @@
             <template v-slot:item="props">
                 <tr style="height:48px">
                     <td :data-unq="`packlist-value-pcoCode-${props.index}`">{{ props.item.packing_order.code }}</td>
-                    <td :data-unq="`packlist-value-site-${props.index}`">{{ props.item.packing_order.site.code }} - {{ props.item.packing_order.site.name }}</td>
+                    <td :data-unq="`packlist-value-site-${props.index}`">{{ props.item.site.code }} - {{ props.item.site.name }}</td>
                     <td :data-unq="`packlist-value-code-${props.index}`">{{ props.item.code }}</td>
                     <td :data-unq="`packlist-value-item-${props.index}`">{{ props.item.item.name }} <br>
                         <span class="text-black60">

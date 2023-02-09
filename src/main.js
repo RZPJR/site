@@ -15,7 +15,10 @@ import {
   SelectGlossary,
   DetailRowNew,
   SelectWarehouse,
-  ConfirmationDialogNew
+  ConfirmationDialogNew,
+  SelectArea,
+  SelectProduct,
+  LoadingBar
 } from "@vue-mf/global";
 import Vuetify from "vuetify/lib";
 Vue.use(require('vue-moment'));
@@ -44,6 +47,9 @@ Vue.mixin({
     DetailRowNew,
     SelectWarehouse,
     ConfirmationDialogNew,
+    SelectArea,
+    SelectProduct,
+    LoadingBar
   },
   data: function() {
     return {

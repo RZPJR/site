@@ -137,7 +137,7 @@
                         :to="{ name: 'PackingOrderCreate' }"
                         class="no-caps bold mr-4"
                         data-unq="packingorder.button.generatepacking"
-                        v-privilege="'prd_crt'"
+                        v-privilege="'pc_crt'"
                     >
                         <span class="text-white">
                             Generate Packing Order
@@ -149,7 +149,7 @@
                         :to="{ name: 'PackList' }"
                         class="no-caps bold"
                         data-unq="packingorder.button.packlist"
-                        v-privilege="'pc_pk_rdl'"
+                        v-privilege="'pc_rdl'"
                     >
                         <span class="text-white">
                             Pack List
@@ -216,7 +216,7 @@
             </template>
         </v-data-table>
         </div>
-        <ConfirmationDialog :sendData="ConfirmData"/>
+        <ConfirmationDialogNew :sendData="ConfirmData"/>
         <!-- <LoadingBar :value="overlay"/> -->
     </v-container>
 </template>
@@ -277,9 +277,9 @@
                 }
             },
             warehouseSelected(d) {
-                this.$store.commit('setWarehouseFilterList', null)
+                this.filter.SelectWarehouse = ""
                 if (d) {
-                    this.$store.commit('setWarehouseFilterList', d.id)
+                    this.filter.SelectWarehouse = d.id
                 }
                 this.fetchPackingOrderList()
             },

@@ -7,7 +7,7 @@ const actions = {
         try {
             let search = state.packing_order_list.filter.search
             let warehouse = !state.packing_order_list.filter.SelectWarehouse ? '' : state.packing_order_list.filter.SelectWarehouse
-            let status = !state.packing_order_list.filter.statuses === 999 ? '' : state.packing_order_list.filter.statuses
+            let status = state.packing_order_list.filter.statuses === 999 ? '' : state.packing_order_list.filter.statuses
             let delivery_date_from = ''
             let delivery_date_to = ''
             if (state.packing_order_list.filter.delivery_date.value.length > 0) {
@@ -25,7 +25,7 @@ const actions = {
                     }
                 }
             }
-            const response = await http.get('/site', {params: {
+            const response = await http.get('/packing_order', {params: {
                 per_page:100,
                 search: search,
                 site_id: warehouse,
@@ -61,6 +61,7 @@ const actions = {
         commit("setFormPackingOrderCreate", {
             delivery_date:new Date(Date.now() + ( 3600 * 1000 * 7)).toISOString().substr(0, 10),
             site_id:"",
+            region_id:"",
             note:"",
         }); 
     },
@@ -89,7 +90,7 @@ const actions = {
                     }
                 }
             }
-            const response = await http.get('/site', {params: {
+            const response = await http.get('/packing_order/pack', {params: {
                 per_page:100,
                 search: search,
                 site_id: site,

@@ -616,10 +616,11 @@
                 return this.connectedPrint
             },
             //to render product and get tolerance for each sku multiply by MOQ
-            async renderProduct(){
-                await this.$http.put("/warehouse/packing_order/recommendation/detail/"+this.dataStore.packing_id,{
-                    product_id: this.dataStore.product_id,
+            renderProduct(){
+                this.$http.get("/site/v1/packing_order/pack/"+this.dataStore.packing_id,{params:{
+                    item_id: this.dataStore.product_id,
                     pack_type: this.dataStore.pack_type
+                }
                 }).then(response => {
                     this.product = response.data.data
                     this.actualData = this.product.actual_total_pack

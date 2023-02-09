@@ -126,6 +126,7 @@ const state = {
     form : {
         delivery_date:new Date(Date.now() + ( 3600 * 1000 * 7)).toISOString().substr(0, 10),
         site_id:"",
+        region_id: "",
         note:"",
     },
   },

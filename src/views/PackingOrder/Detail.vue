@@ -97,26 +97,25 @@
         </div>
         <div class="box-body-table">
             <v-data-table
-                :headers="table_headers"
+                :headers="table_header"
                 :items="data.packing_recommendation"
                 :hide-default-footer="true"
                 :items-per-page="-1"
-                class="mx-6 mt-6"
             >
             <template v-slot:item="props">
                 <tr style="height:48px">
-                    <td>{{ props.item.product.name }}</td>
-                    <td>{{ props.item.product.uom.name }}</td>
+                    <td>{{ props.item.item.name }}</td>
+                    <td>{{ props.item.item.uom.name }}</td>
                     <td>{{ props.item.total_progress_pct }}%</td>
                     <td>
-                        <div v-for="(item, idx) in props.item.product_pack" :key="idx">
+                        <div v-for="(item, idx) in props.item.item_pack" :key="idx">
                             <div v-if="item.pack_type == 0.25">
                                 <v-btn
                                     depressed
                                     color="#50ABA3"
                                     data-unq="packingorder.button.0.25"
                                     :disabled="item.actual_total_pack === item.expected_total_pack ? !disabledBtn : disabledBtn"
-                                    @click="weighScale(props.item.product.id,item.pack_type)"
+                                    @click="weighScale(props.item.item.id,item.pack_type)"
                                     class="no-caps bold"
                                 >
                                     <span class="text-white">
@@ -133,14 +132,14 @@
                         </div>
                     </td>
                     <td>
-                        <div v-for="(item, idx) in props.item.product_pack" :key="idx">
+                        <div v-for="(item, idx) in props.item.item_pack" :key="idx">
                             <div v-if="item.pack_type == 0.5">
                                 <v-btn
                                     depressed
                                     color="#50ABA3"
                                     data-unq="packingorder.button.0.5"
                                     :disabled="item.actual_total_pack === item.expected_total_pack ? !disabledBtn : disabledBtn"
-                                    @click="weighScale(props.item.product.id,item.pack_type)"
+                                    @click="weighScale(props.item.item.id,item.pack_type)"
                                     class="no-caps bold"
                                 >
                                     <span class="text-white">
@@ -157,14 +156,14 @@
                         </div>
                     </td>
                     <td>
-                        <div v-for="(item, idx) in props.item.product_pack" :key="idx">
+                        <div v-for="(item, idx) in props.item.item_pack" :key="idx">
                             <div v-if="item.pack_type == 1">
                                 <v-btn
                                     depressed
                                     color="#50ABA3"
                                     data-unq="packingorder.button.1"
                                     :disabled="item.actual_total_pack === item.expected_total_pack ? !disabledBtn : disabledBtn"
-                                    @click="weighScale(props.item.product.id,item.pack_type)"
+                                    @click="weighScale(props.item.item.id,item.pack_type)"
                                     class="no-caps bold"
                                 >
                                     <span class="text-white">
@@ -181,14 +180,14 @@
                         </div>
                     </td>
                     <td>
-                        <div v-for="(item, idx) in props.item.product_pack" :key="idx">
+                        <div v-for="(item, idx) in props.item.item_pack" :key="idx">
                             <div v-if="item.pack_type == 2">
                                 <v-btn
                                     depressed
                                     color="#50ABA3"
                                     data-unq="packingorder.button.2"
                                     :disabled="item.actual_total_pack === item.expected_total_pack ? !disabledBtn : disabledBtn"
-                                    @click="weighScale(props.item.product.id,item.pack_type)"
+                                    @click="weighScale(props.item.item.id,item.pack_type)"
                                     class="no-caps bold"
                                 >
                                     <span class="text-white">
@@ -205,14 +204,14 @@
                         </div>
                     </td>
                     <td>
-                        <div v-for="(item, idx) in props.item.product_pack" :key="idx">
+                        <div v-for="(item, idx) in props.item.item_pack" :key="idx">
                             <div v-if="item.pack_type == 5">
                                 <v-btn
                                     depressed
                                     color="#50ABA3"
                                     data-unq="packingorder.button.5"
                                     :disabled="item.actual_total_pack === item.expected_total_pack ? !disabledBtn : disabledBtn"
-                                    @click="weighScale(props.item.product.id,item.pack_type)"
+                                    @click="weighScale(props.item.item.id,item.pack_type)"
                                     class="no-caps bold"
                                 >
                                     <span class="text-white">
@@ -229,14 +228,14 @@
                         </div>
                     </td>
                     <td>
-                        <div v-for="(item, idx) in props.item.product_pack" :key="idx">
+                        <div v-for="(item, idx) in props.item.item_pack" :key="idx">
                             <div v-if="item.pack_type == 10">
                                 <v-btn
                                     depressed
                                     color="#50ABA3"
                                     data-unq="packingorder.button.10"
                                     :disabled="item.actual_total_pack === item.expected_total_pack ? !disabledBtn : disabledBtn"
-                                    @click="weighScale(props.item.product.id,item.pack_type)"
+                                    @click="weighScale(props.item.item.id,item.pack_type)"
                                     class="no-caps bold"
                                 >
                                     <span class="text-white">
@@ -253,14 +252,14 @@
                         </div>
                     </td>
                     <td>
-                        <div v-for="(item, idx) in props.item.product_pack" :key="idx">
+                        <div v-for="(item, idx) in props.item.item_pack" :key="idx">
                             <div v-if="item.pack_type == 20">
                                 <v-btn
                                     depressed
                                     color="#50ABA3"
                                     data-unq="packingorder.button.20"
                                     :disabled="item.actual_total_pack === item.expected_total_pack ? !disabledBtn : disabledBtn"
-                                    @click="weighScale(props.item.product.id,item.pack_type)"
+                                    @click="weighScale(props.item.item.id,item.pack_type)"
                                     class="no-caps bold"
                                 >
                                     <span class="text-white">
@@ -306,7 +305,7 @@ export default {
         }
     },
     created() {
-        this.fetchPackingOrderDetail()
+        this.fetchPackingOrderDetail({ id: this.$route.params.id })
     },
     mounted() {
         let self = this
@@ -319,6 +318,7 @@ export default {
     computed: {
         ...mapState({
             packing_order_detail: state => state.packingOrder.packing_order_detail,
+            table_header: state => state.packingOrder.packing_order_detail.table_headers,
             data: state => state.packingOrder.packing_order_detail.data,
         }),
     },
@@ -351,7 +351,7 @@ export default {
             let data = {
                 product_id: product_id,
                 pack_type: pack_type,
-                packing_id: this.items.id
+                packing_id: this.packing_order_detail.data.id
             };
             this.$store.commit("setWeighScale", data);
             window.location.replace("/warehouse/weigh-scale");
