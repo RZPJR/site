@@ -296,9 +296,11 @@
             //to dispose printed packing if error occured in the warehouse
             disposePacking(){
                 this.loadingDispose = true
-                this.$http.put("/warehouse/packing_order/recommendation/dispose/"+this.PackingId,{
-                    item_id: this.ProductId,
-                    pack_type: this.PackType,
+                this.$http.delete("/site/v1/packing_order/pack/print/"+this.PackingId,{
+                    data:{
+                        item_id: this.ProductId,
+                        pack_type: this.PackType,
+                    }
                 })
                 .then(response => {
                     Vue.$toast.open({
