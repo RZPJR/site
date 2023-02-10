@@ -296,9 +296,11 @@
             //to dispose printed packing if error occured in the warehouse
             disposePacking(){
                 this.loadingDispose = true
-                this.$http.put("/warehouse/packing_order/recommendation/dispose/"+this.PackingId,{
-                    product_id: this.ProductId,
-                    pack_type: this.PackType,
+                this.$http.delete("/site/v1/packing_order/pack/print/"+this.PackingId,{
+                    data:{
+                        item_id: this.ProductId,
+                        pack_type: this.PackType,
+                    }
                 })
                 .then(response => {
                     Vue.$toast.open({
@@ -347,10 +349,10 @@
             //to print label to through the websocket
             printLabel(pc_id,prd_id,pack){
                 this.overlay = true
-                this.$http.put("/warehouse/packing_order/recommendation/print/"+pc_id,{
-                    product_id: prd_id,
+                this.$http.put("/site/v1/packing_order/pack/print/"+pc_id,{
+                    item_id: prd_id,
                     pack_type: pack,
-                    type_print: 0,
+                    type_print: 2,
                     weight_scale: 0
                 })
                 .then(response => {
