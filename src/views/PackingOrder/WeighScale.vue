@@ -144,18 +144,16 @@
                 <v-col cols="12" md="4">
                     <div class="box-col24">
                         <div class="flex-align-center">
-                            <div v-for="(item, idx) in product.product.product_image" :key="idx">
-                                <v-img
-                                    class="rounded-form"
-                                    height="180"
-                                    width="250"
-                                    :src="item.image_url"
-                                ></v-img>
-                            </div>
-                            <h2 class="mt20">{{ product.product.name }}</h2>
+                            <v-img
+                                class="rounded-form"
+                                height="180"
+                                width="250"
+                                :src="product.item.item_image.image_url"
+                            ></v-img>
+                            <h2 class="mt20">{{ product.item.name }}</h2>
                         </div>
                         <div class="mt20">
-                            <DetailRowNew :name="`Pack`" :value="`${product.weight_pack} KG`"/>
+                            <DetailRowNew :name="`Pack`" :value="`${product.pack_type} KG`"/>
                         </div>
                         <div class="flex-align-center mt30">
                             <h1>
@@ -236,13 +234,13 @@
                 </v-card-title>
                 <v-card-text>
                     <span class="fs16 mt-1">
-                        You have finished the packing for "<b>{{ product.product.name }} (x{{ product.pack_type }})</b>". Let's weigh the next item.
+                        You have finished the packing for "<b>{{ product.item.name }} (x{{ product.pack_type }})</b>". Let's weigh the next item.
                     </span>
                 </v-card-text>
                 <v-card-actions class="pb-4">
                 <v-spacer></v-spacer>
                     <v-btn
-                        @click="fulfill = false"
+                        @click="fulfill = false, loading = false"
                         class="main-btn white--text"
                         depressed
                         color="#50ABA3"
@@ -281,6 +279,7 @@
 }
 </style>
 <script>
+    import { mapState, mapActions } from "vuex";
     import Vue from 'vue'
     export default {
         name: "WeighScale",
@@ -344,7 +343,7 @@
             this.checkBrowserTab()
             this.checkStableTime()
 
-            this.dataStore = this.$store.state.WeighScale
+            this.dataStore = JSON.parse(localStorage.getItem("valueWeight"))
         },
         mounted() {
             let self = this
@@ -386,7 +385,7 @@
         methods: {
             // to check weigh scale stable time before do action
             checkStableTime(){
-                this.$http.get("/config/app", {
+                this.$http.get("/configuration/v1/app", {
                 params: {
                     orderby: '-id',
                 }
@@ -413,7 +412,7 @@
             },
             //route to detail
             toDetail(){
-                window.location.replace('/warehouse/packing-order/detail/'+this.dataStore.packing_id);
+                window.location.replace('/site/packing-order/detail/'+this.dataStore.packing_id);
             },
             //to select weigh port
             selectedWeigh(weigh){
@@ -470,9 +469,11 @@
             //to dispose printed packing if error occured in the warehouse
             disposePacking(){
                 this.loadingDispose = true
-                this.$http.put("/warehouse/packing_order/recommendation/dispose/"+this.dataStore.packing_id,{
-                    product_id: this.dataStore.product_id,
-                    pack_type: this.dataStore.pack_type,
+                this.$http.delete("/site/v1/packing_order/pack/dispose/"+this.dataStore.packing_id,{
+                    data: {
+                        item_id: this.dataStore.product_id,
+                        pack_type: this.dataStore.pack_type,
+                    }
                 })
                 .then(response => {
                     this.packing_code = response.data.data.code_print
@@ -495,8 +496,8 @@
             weighScale(){
                 //  || this.product.actual_total_pack > this.product.expected_total_pack
                 this.loading = true
-                this.$http.put("/warehouse/packing_order/recommendation/update/"+this.dataStore.packing_id,{
-                    product_id: this.dataStore.product_id,
+                this.$http.put("/site/v1/packing_order/pack/update/"+this.dataStore.packing_id,{
+                    item_id: this.dataStore.product_id,
                     pack_type: this.dataStore.pack_type,
                     type_print: 1,
                 })
@@ -504,8 +505,8 @@
                     if(this.product.actual_total_pack >= this.product.expected_total_pack){
                         this.fulfill = true
                     }else{
-                        this.$http.put("/warehouse/packing_order/recommendation/print/"+this.dataStore.packing_id,{
-                            product_id: this.dataStore.product_id,
+                        this.$http.put("/site/v1/packing_order/pack/print/"+this.dataStore.packing_id,{
+                            item_id: this.dataStore.product_id,
                             pack_type: this.dataStore.pack_type,
                             type_print: 1,
                             weight_scale: parseFloat(this.search)
@@ -542,8 +543,8 @@
             //to print label to through the websocket
             printLabel(){
                 this.loading = true
-                this.$http.put("/warehouse/packing_order/recommendation/print/"+this.dataStore.packing_id,{
-                    product_id: this.dataStore.product_id,
+                this.$http.put("/site/v1/packing_order/pack/print/"+this.dataStore.packing_id,{
+                    item_id: this.dataStore.product_id,
                     pack_type: this.dataStore.pack_type,
                     type_print: 0,
                     weight_scale: parseFloat(this.search)
@@ -625,11 +626,11 @@
                     this.product = response.data.data
                     this.actualData = this.product.actual_total_pack
                     this.expectedData = this.product.expected_total_pack
-                    this.tolerance = this.product.weight_pack
+                    this.tolerance = this.product.pack_type
                     if(this.actualData === this.expectedData){
                         this.finished = true
                     }
-                    this.$http.get("/config/app", {
+                    this.$http.get("/configuration/v1/app", {
                     params: {
                         orderby: '-id',
                     }
@@ -640,7 +641,7 @@
                             let temp = this.get_tolerance[i]
                             if(temp.attribute === "percentage_packing_tolerance"){
                                 let temp_tolerance = temp.value
-                                let moq = this.product.product.order_min_qty
+                                let moq = this.product.item.order_min_qty
                                 let pct = (temp_tolerance / 100) * moq // (percent / 100) * value = value percentage
                                 this.aboveTolerance = this.tolerance + pct // value + percentage result
                                 this.belowTolerance = this.tolerance - pct // value - percentage result

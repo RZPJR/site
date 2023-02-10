@@ -306,6 +306,7 @@ export default {
     },
     created() {
         this.fetchPackingOrderDetail({ id: this.$route.params.id })
+        localStorage.setItem("valueWeight", "")
     },
     mounted() {
         let self = this
@@ -353,8 +354,8 @@ export default {
                 pack_type: pack_type,
                 packing_id: this.packing_order_detail.data.id
             };
-            this.$store.commit("setWeighScale", data);
-            window.location.replace("/warehouse/weigh-scale");
+            localStorage.setItem("valueWeight", JSON.stringify(data))
+            window.location.replace("/site/weigh-scale");
         },
     }
 }
