@@ -546,7 +546,7 @@
                 this.$http.put("/site/v1/packing_order/pack/print/"+this.dataStore.packing_id,{
                     item_id: this.dataStore.product_id,
                     pack_type: this.dataStore.pack_type,
-                    type_print: 0,
+                    type_print: 2,
                     weight_scale: parseFloat(this.search)
                 })
                 .then(response => {
