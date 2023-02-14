@@ -75,7 +75,7 @@
                                     name="filter_delivery_date"
                                     data-unq="packingorder.deliverydate"
                                     clearable
-                                    @click:clear="delivery_date = [],fetchPackingOrderList()"
+                                    @click:clear="delivery_date.value = [],fetchPackingOrderList()"
                                     v-model="delivery_date.input"
                                     maxlength="24"
                                     dense
