@@ -11,15 +11,7 @@ import VueToast from 'vue-toast-notification';
 import 'vue-toast-notification/dist/theme-sugar.css';
 import '@mdi/font/css/materialdesignicons.css'
 
-import { 
-  SelectGlossary,
-  DetailRowNew,
-  SelectWarehouse,
-  ConfirmationDialogNew,
-  SelectArea,
-  SelectProduct,
-  LoadingBar
-} from "@vue-mf/global";
+import { Components } from "@vue-mf/global";
 import Vuetify from "vuetify/lib";
 Vue.use(require('vue-moment'));
 
@@ -42,15 +34,7 @@ Vue.directive('privilege', {
 })
 
 Vue.mixin({
-  components: { 
-    SelectGlossary,
-    DetailRowNew,
-    SelectWarehouse,
-    ConfirmationDialogNew,
-    SelectArea,
-    SelectProduct,
-    LoadingBar
-  },
+  components: Components,
   data: function() {
     return {
       status: [
