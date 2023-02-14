@@ -9,6 +9,14 @@
 </template>
 <script>
 export default {
-    watch: { '$route' (val) { localStorage.setItem("route", JSON.stringify(val)); } },
+    watch: { '$route' (val) { this.setRouter(val) } },
+    created() {
+        this.setRouter(this.$router.history.current)
+    },
+    methods : {
+        setRouter(val) {
+            localStorage.setItem("route", JSON.stringify(val));
+        }
+    }
 }
 </script>
