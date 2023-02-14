@@ -55,10 +55,10 @@
             </v-row>
             <v-row>
                 <v-col cols="12" md="6" class="-mt24">
-                    <DetailRowNew :name="'Area'" :value="data.region.name"/>
+                    <DetailRowNew :name="'Region'" :value="data.region.name"/>
                 </v-col>
                 <v-col cols="12" md="6" class="-mt24">
-                    <DetailRowNew :name="'Warehouse'" :value="data.site.name"/>
+                    <DetailRowNew :name="'Site'" :value="data.site.name"/>
                 </v-col>
                 <v-col cols="12" md="6" class="-mt24">
                     <DetailRowNew :name="'Delivery Date'" :value="formatDate(data.delivery_date)"/>
