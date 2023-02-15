@@ -138,7 +138,7 @@
                 </v-col>
             </v-row>
             <v-row v-if="filter">
-                <v-col cols="12" md="3" class="-mt24">
+                <v-col cols="12" md="3" class="mt15">
                     <v-select
                         v-model="modelWeigh"
                         outlined
@@ -148,7 +148,7 @@
                         :dense="true"
                     ></v-select>
                 </v-col>
-                <v-col cols="12" md="3" class="-mt24 mb24">
+                <v-col cols="12" md="3" class="mt15 mb24">
                     <v-tooltip bottom>
                         <template v-slot:activator="{ on: tooltip }">
                             <v-text-field
@@ -180,7 +180,7 @@
                         </a>
                     </div>
                 </v-col>
-                <v-col cols="12" md="3" class="-mt24">
+                <v-col cols="12" md="3" class="mt15">
                     <v-select
                         v-model="modelTime"
                         outlined
@@ -190,7 +190,7 @@
                         :dense="true"
                     ></v-select>
                 </v-col>
-                <v-col cols="12" md="3" class="-mt30 mb20">
+                <v-col cols="12" md="3" class="mt10 mb20">
                     <v-btn
                         depressed
                         data-unq="weighscale-button-setWeightScale"
