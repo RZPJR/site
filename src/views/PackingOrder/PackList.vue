@@ -296,7 +296,7 @@
             //to dispose printed packing if error occured in the warehouse
             disposePacking(){
                 this.loadingDispose = true
-                this.$http.delete("/site/v1/packing_order/pack/print/"+this.PackingId,{
+                this.$http.delete("/site/v1/packing_order/pack/dispose/"+this.PackingId,{
                     data:{
                         item_id: this.ProductId,
                         pack_type: this.PackType,
