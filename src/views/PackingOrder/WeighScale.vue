@@ -2,7 +2,7 @@
     <v-container fill-height class="main-container">
         <div class="box">
             <v-row>
-                <v-col cols="12">
+                <v-col cols="12" class="-mb12">
                     <v-alert
                         v-if="alert"
                         icon="check"
@@ -20,6 +20,7 @@
                                 <v-btn
                                     @click="toDetail()"
                                     depressed
+                                    data-unq="weighscale-button-back"
                                     outlined
                                     color="#EBEBEB"
                                     class="main-btn bg-white-btn"
@@ -39,6 +40,7 @@
                                     depressed
                                     color="#50ABA3"
                                     class="no-caps bold"
+                                    data-unq="weighscale-button-reprint"
                                     @click="printLabel()"
                                 >
                                 <span class="text-white">
@@ -51,6 +53,7 @@
                                     class="no-caps bold"
                                     color="red"
                                     dark
+                                    data-unq="weighscale-button-dispose"
                                     @click="dispose = true"
                                 >
                                     <span class="text-white">
@@ -83,6 +86,7 @@
                                     @click="toDetail()"
                                     depressed
                                     outlined
+                                    data-unq="weighscale-button-backDetail"
                                     color="#EBEBEB"
                                     class="main-btn bg-white-btn"
                                     dark
@@ -101,31 +105,124 @@
                 </v-col>
             </v-row>
         </div>
+        <div class="box-end">
+            <v-row :class="filter ? 'mb20' : ''">
+                <v-col>
+                    Setting
+                    <v-btn
+                        depressed
+                        x-small
+                        @click="filter = !filter"
+                        v-if="filter"
+                        data-unq="weighscale-button-hideFilter"
+                        class="no-caps fs12"
+                    >
+                        Hide
+                        <v-icon right>
+                            mdi-chevron-up
+                        </v-icon>
+                    </v-btn>
+                    <v-btn
+                        depressed
+                        x-small
+                        @click="filter = !filter"
+                        v-else
+                        data-unq="weighscale-button-showFilter"
+                        class="no-caps fs12"
+                    >
+                        Show
+                        <v-icon right>
+                            mdi-chevron-down
+                        </v-icon>
+                    </v-btn>
+                </v-col>
+            </v-row>
+            <v-row v-if="filter">
+                <v-col cols="12" md="3" class="-mt24">
+                    <v-select
+                        v-model="modelWeigh"
+                        outlined
+                        label="Select Weigh Scale"
+                        data-unq="weighscale-filter-selectWeightScale"
+                        :items="selectWeigh"
+                        :dense="true"
+                    ></v-select>
+                </v-col>
+                <v-col cols="12" md="3" class="-mt24 mb24">
+                    <v-tooltip bottom>
+                        <template v-slot:activator="{ on: tooltip }">
+                            <v-text-field
+                                required
+                                v-model="portIp"
+                                name="search"
+                                label="IP Address"
+                                single-line
+                                data-unq="weighscale-input-ipAdress"
+                                hide-details
+                                v-on="{ ...tooltip }"
+                                outlined
+                                onkeypress='return event.charCode == 46 || (event.charCode >= 48 && event.charCode <= 57)'
+                                dense
+                                :error="message == 'error1'"
+                            ></v-text-field>
+                        </template>
+                        <span>Please insert the IP Address from your master device (the device is connected with weighscale and print)</span>
+                    </v-tooltip>
+                    <div v-if="message == 'error1'" class="mt-1 ml-3 fs12 text-red -mb2">
+                        <span>Please Input IP Address</span>
+                    </div>
+                    <div v-if="message == 'error2'" class="mt-1 ml-3 fs12 text-green -mb2">
+                        <a 
+                           v-bind:href="'https://'+ portIp + ':12212/'"
+                           target="_blank"
+                        >
+                            <span>Click here to allow certificate</span>
+                        </a>
+                    </div>
+                </v-col>
+                <v-col cols="12" md="3" class="-mt24">
+                    <v-select
+                        v-model="modelTime"
+                        outlined
+                        data-unq="weighscale-select-printingTime"
+                        label="Select Printing Time"
+                        :items="selectTime"
+                        :dense="true"
+                    ></v-select>
+                </v-col>
+                <v-col cols="12" md="3" class="-mt30 mb20">
+                    <v-btn
+                        depressed
+                        data-unq="weighscale-button-setWeightScale"
+                        color="#50ABA3"
+                        class="no-caps bold mt8"
+                        @click="setSetting(modelWeigh, portIp, modelTime)"
+                    >
+                        <span class="text-white">
+                            SET
+                        </span>
+                    </v-btn>
+                </v-col>
+            </v-row>
+        </div>
         <div class="ma12 wp100">
             <v-row>
-                <v-col cols="12" md="8">
+                <v-col cols="12" md="8" class="-mt14">
                     <div class="box-col24">
-                        <div class="flex-align-center">
-                            <v-select
-                                v-model="modelWeigh"
-                                outlined
-                                label="Select Weigh Scale"
-                                :items="selectWeigh"
-                                @change="selectedWeigh(modelWeigh)"
-                            ></v-select>
-                        </div>
                         <div class="counter-bg">
                             <div class="flex-align-center">
                                 <h1 class="fs200" :style="style">
-                                    {{search}}
-                                    <v-icon
-                                        x-large
-                                        dark
-                                        class="fs200"
-                                        :style="style"
-                                    >
-                                        {{icon}}
-                                    </v-icon>
+                                    <div class="d-flex align-center">
+                                        {{search}}
+                                        <v-icon
+                                            x-large
+                                            dark
+                                            class="fs200"
+                                            :style="style"
+                                        >
+                                            {{icon}}
+                                        </v-icon>
+                                    </div>
                                 </h1>
                                 <v-alert
                                     v-if="caution"
@@ -141,21 +238,35 @@
                         </div>
                     </div>
                 </v-col>
-                <v-col cols="12" md="4">
+                <v-col cols="12" md="4" class="-mt14">
                     <div class="box-col24">
-                        <div class="flex-align-center">
-                            <v-img
-                                class="rounded-form"
-                                height="180"
-                                width="250"
-                                :src="product.item.item_image.image_url"
-                            ></v-img>
-                            <h2 class="mt20">{{ product.item.name }}</h2>
+                        <div v-if="manual">
+                            <v-btn
+                                block
+                                depressed
+                                color="#50ABA3"
+                                class="no-caps bold -mt5 mb20"
+                                data-unq="weighscale-button-printWeightScale"
+                                @click="manualPrint(portIp)"
+                            >
+                                <span class="text-white">
+                                    PRINT
+                                </span>
+                            </v-btn>
                         </div>
-                        <div class="mt20">
+                        <div class="flex-align-center">
+                                <v-img
+                                    class="rounded-form"
+                                    height="150"
+                                    width="200"
+                                    :src="product.item.item_image.image_url"
+                                ></v-img>
+                            <h2 class="mt16">{{ product.item.name }}</h2>
+                        </div>
+                        <div class="mt16">
                             <DetailRowNew :name="`Pack`" :value="`${product.pack_type} KG`"/>
                         </div>
-                        <div class="flex-align-center mt30">
+                        <div class="flex-align-center mt25">
                             <h1>
                                 {{ this.actualData }}/{{ this.expectedData }} Pack <br>
                                 <div v-if="finished" class="align">
@@ -171,6 +282,7 @@
                                         <v-icon
                                             dark
                                             left
+                                            data-unq="weighscale-button-backDetail"
                                             class="black-ic"
                                         >
                                             mdi-arrow-left-bold
@@ -208,11 +320,13 @@
                         depressed
                         outlined
                         color="#EBEBEB"
+                        data-unq="weighscale-button-cancelDispose"
                         class="main-btn"
                     >
                         <span class="text-black80">No</span>
                     </v-btn>
                     <v-btn
+                        data-unq="weighscale-button-dispose"
                         @click="disposePacking()"
                         class="main-btn white--text"
                         depressed
@@ -240,9 +354,10 @@
                 <v-card-actions class="pb-4">
                 <v-spacer></v-spacer>
                     <v-btn
-                        @click="fulfill = false, loading = false"
+                        @click="fulfill = false"
                         class="main-btn white--text"
                         depressed
+                        data-unq="weighscale-button-closeFulfill"
                         color="#50ABA3"
                     >Ok</v-btn>
                 </v-card-actions>
@@ -253,7 +368,7 @@
 </template>
 <style scoped>
 .fs200{
-    font-size: 200px !important;
+    font-size: 12vw !important;
 }
 .counter-bg{
     background-color:#2B3739 !important; 
@@ -279,7 +394,6 @@
 }
 </style>
 <script>
-    import { mapState, mapActions } from "vuex";
     import Vue from 'vue'
     export default {
         name: "WeighScale",
@@ -287,6 +401,7 @@
             return {
                 url: '',
                 loading: false,
+                filter: true,
                 loadingDispose: false,
                 errorSO: false,
                 fulfill: false,
@@ -302,7 +417,12 @@
                 connectedPrint: false,
                 style: 'color: white;',
                 icon: '',
-                product: [],
+                product: {
+                    product: {
+                        name: '',
+                        product_image: []
+                    }
+                },
                 packing: [],
                 packing_code: '',
                 callPrint: false,
@@ -323,17 +443,55 @@
                 belowTolerance: 0,
                 checkBrowser: true,
                 stable_weighing_time_second: 0,
-                modelWeigh: 'WEIGH1',
+                modelWeigh: '',
+                portIp: '127.0.0.1',
+                manual: false,
+                message: '',
                 selectWeigh:[
                     {
-                        text:'Weigh 1',
+                        text:'WEIGH1',
                         value: 'WEIGH1'
                     },
                     {
-                        text:'Weigh 2',
+                        text:'WEIGH2',
                         value: 'WEIGH2'
                     },
+                    {
+                        text:'WEIGH3',
+                        value: 'WEIGH3'
+                    },
+                    {
+                        text:'WEIGH4',
+                        value: 'WEIGH4'
+                    },
+                    {
+                        text:'WEIGH5',
+                        value: 'WEIGH5'
+                    },
+                    {
+                        text:'WEIGH6',
+                        value: 'WEIGH6'
+                    },
+                    {
+                        text:'WEIGH7',
+                        value: 'WEIGH7'
+                    },
+                    {
+                        text:'WEIGH8',
+                        value: 'WEIGH8'
+                    }
                 ],
+                modelTime: '1000',
+                selectTime: [
+                    {
+                        text: '5 Seconds',
+                        value: '1000'
+                    },
+                    {
+                        text: 'Manual',
+                        value: '0'
+                    }
+                ]
             }
         },
         created() {
@@ -348,6 +506,15 @@
         mounted() {
             let self = this
             self.renderProduct()
+            let weigh = localStorage.getItem('weigh_port')
+            let time = localStorage.getItem('time')
+            let ip = localStorage.getItem('ip_port')
+            // get default IP
+            if (ip || weigh || time) {
+                self.modelWeigh = weigh
+                self.portIp = ip
+                self.modelTime = time
+            }
             //to increment ticker and check ticker condition if its more than 5 back to zero every 1 second
             setInterval(function(){
                 self.ticker += 1
@@ -371,16 +538,26 @@
                     self.ticker = 0
                 }
             }, 110);
-            // paralel if its 5 second and data are the same it will proceed to do the automatic print through websocket every 1 second
+            // paralel data are the same it will proceed to do the print automatic or manual base on conditions
             setInterval(function(){
-                if (self.ticker == self.stable_weighing_time_second && (self.data2 === self.data) && parseFloat(self.data) > 0 && self.belowWeight == false && self.checkBrowser == true) {
-                    self.ticker = 0
-                    if(!self.callPrint){
-                        self.callPrint = true
-                        self.weighScale()
+                if (time) {
+                    if (self.ticker == self.stable_weighing_time_second && (self.data2 === self.data) && parseFloat(self.data) > 0 && self.belowWeight == false && self.checkBrowser == true && time != 0) {
+                        // for automatic print 5 seconds
+                        self.ticker = 0
+                        if(!self.callPrint){
+                            self.callPrint = true
+                            self.weighScale()
+                        }
+                    } else if (self.ticker == self.stable_weighing_time_second && (self.data2 === self.data) && parseFloat(self.data) > 0 && self.belowWeight == false && self.checkBrowser == true && time == 0) {
+                        // for manual print
+                        self.ticker = 0
+                        if(!self.callPrint){
+                            self.callPrint = true
+                            self.manual = true
+                        }
                     }
                 }
-            }, 1000)
+            }, time)
         },
         methods: {
             // to check weigh scale stable time before do action
@@ -414,23 +591,34 @@
             toDetail(){
                 window.location.replace('/site/packing-order/detail/'+this.dataStore.packing_id);
             },
-            //to select weigh port
-            selectedWeigh(weigh){
-                localStorage.setItem('weigh_port',weigh)
-                window.location.reload()
+            // to manual print label
+            manualPrint(){
+                this.weighScale()
+            },
+            //to select Settings (Weigh, IP, Time)
+            setSetting(weigh, ip, time) {
+                if (weigh && ip && time) {
+                    localStorage.setItem('weigh_port',weigh)
+                    localStorage.setItem('ip_port', ip)
+                    localStorage.setItem('time',time)
+                    window.location.reload()
+                } else {
+                    this.message = 'error1'
+                }
             },
             //connection method to websocket for weigh scale
             weighConnection(){
                 let val = localStorage.getItem('weigh_port')
-                this.modelWeigh = val
-                this.websocket = new WebSocket("ws://127.0.0.1:12212/serial/"+val)
+                let ip = localStorage.getItem('ip_port')
+                this.websocket = new WebSocket(`wss://${ip}:12212/serial/`+val)
                 this.websocket.onopen = this.onConnect
                 this.websocket.onclose = this.onDisconnect
                 this.websocket.onmessage = this.onMessage
             },
             //connection method to websocket for print
             printConnection(){
-                this.websocketPrint = new WebSocket("ws://127.0.0.1:12212/printer")
+                let ip = localStorage.getItem('ip_port')
+                this.websocketPrint = new WebSocket(`wss://${ip}:12212/printer`)
                 this.websocketPrint.onopen = this.onConnectPrint
                 this.websocketPrint.onclose = this.onDisconnectPrint
             },
@@ -530,6 +718,7 @@
                             this.loading = false
                             this.alert = true
                             this.caution = true
+                            this.manual = false
                             if(this.actualData === this.expectedData){
                                 this.finished = true
                             }
@@ -567,36 +756,47 @@
                 let that = this
                 that.data = JSON.parse(JSON.stringify(weight))
                 this.search = weight.slice(2)
-                if (this.search >= this.tolerance && this.search <= this.aboveTolerance){
+                if (this.search == this.tolerance) { // weight equal tolerance
                     this.style = 'color: green;'
                     this.icon = 'mdi-check-bold'
                     this.belowWeight = false
-                }
-                else if (this.search > this.aboveTolerance){
+                } else if (this.search > this.tolerance && this.search <= this.aboveTolerance) { // weight greater than moq but still inside tolerance
                     this.style = 'color: yellow;'
                     this.icon = 'mdi-arrow-down-bold'
                     this.belowWeight = false
-                }
-                else if (this.search > 0){
+                } else if (this.search > this.aboveTolerance) { // weight greater than tolerance
+                    this.style = 'color: yellow;'
+                    this.icon = 'mdi-arrow-down-bold'
+                    this.belowWeight = true
+                    this.manual = false
+                } else if (this.search > 0 && this.search < this.tolerance) { // weight lower than tolerance
                     this.style = 'color: red;'
                     this.icon = 'mdi-arrow-up-bold'
                     this.belowWeight = true
-                }
-                else{
+                    this.manual = false
+                } else {
                     this.style = 'color: white;'
                     this.icon = ''
                     this.callPrint = false
                     this.caution = false
                     this.belowWeight = true
+                    this.manual = false
                 }
             },
             //show status connected if onconnect for weigh scale
             onConnect(){
                 this.connected = true
+                let weigh = localStorage.getItem('weigh_port')
+                let ip = localStorage.getItem('ip_port')
+                let time = localStorage.getItem('time')
+                this.portIp = ip
+                this.modelWeigh = weigh
+                this.modelTime = time
             },
             //show status disconnected if ondisconnect and try to reconnect to the websocket for weigh scale
             onDisconnect(){
                 this.connected = false
+                this.message = 'error2'
                 this.reconnect()
             },
             //show status connected if onconnect for print
@@ -641,8 +841,7 @@
                             let temp = this.get_tolerance[i]
                             if(temp.attribute === "percentage_packing_tolerance"){
                                 let temp_tolerance = temp.value
-                                let moq = this.product.item.order_min_qty
-                                let pct = (temp_tolerance / 100) * moq // (percent / 100) * value = value percentage
+                                let pct = (temp_tolerance / 100) * this.tolerance // (percent / 100) * value = value percentage
                                 this.aboveTolerance = this.tolerance + pct // value + percentage result
                                 this.belowTolerance = this.tolerance - pct // value - percentage result
                             }
