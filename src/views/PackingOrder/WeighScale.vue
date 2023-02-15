@@ -20,6 +20,7 @@
                                 <v-btn
                                     @click="toDetail()"
                                     depressed
+                                    data-unq="weighscale-button-back"
                                     outlined
                                     color="#EBEBEB"
                                     class="main-btn bg-white-btn"
@@ -39,6 +40,7 @@
                                     depressed
                                     color="#50ABA3"
                                     class="no-caps bold"
+                                    data-unq="weighscale-button-reprint"
                                     @click="printLabel()"
                                 >
                                 <span class="text-white">
@@ -51,6 +53,7 @@
                                     class="no-caps bold"
                                     color="red"
                                     dark
+                                    data-unq="weighscale-button-dispose"
                                     @click="dispose = true"
                                 >
                                     <span class="text-white">
@@ -83,6 +86,7 @@
                                     @click="toDetail()"
                                     depressed
                                     outlined
+                                    data-unq="weighscale-button-backDetail"
                                     color="#EBEBEB"
                                     class="main-btn bg-white-btn"
                                     dark
@@ -110,6 +114,7 @@
                         x-small
                         @click="filter = !filter"
                         v-if="filter"
+                        data-unq="weighscale-button-hideFilter"
                         class="no-caps fs12"
                     >
                         Hide
@@ -122,6 +127,7 @@
                         x-small
                         @click="filter = !filter"
                         v-else
+                        data-unq="weighscale-button-showFilter"
                         class="no-caps fs12"
                     >
                         Show
@@ -137,6 +143,7 @@
                         v-model="modelWeigh"
                         outlined
                         label="Select Weigh Scale"
+                        data-unq="weighscale-filter-selectWeightScale"
                         :items="selectWeigh"
                         :dense="true"
                     ></v-select>
@@ -150,6 +157,7 @@
                                 name="search"
                                 label="IP Address"
                                 single-line
+                                data-unq="weighscale-input-ipAdress"
                                 hide-details
                                 v-on="{ ...tooltip }"
                                 outlined
@@ -176,6 +184,7 @@
                     <v-select
                         v-model="modelTime"
                         outlined
+                        data-unq="weighscale-select-printingTime"
                         label="Select Printing Time"
                         :items="selectTime"
                         :dense="true"
@@ -184,6 +193,7 @@
                 <v-col cols="12" md="3" class="-mt30 mb20">
                     <v-btn
                         depressed
+                        data-unq="weighscale-button-setWeightScale"
                         color="#50ABA3"
                         class="no-caps bold mt8"
                         @click="setSetting(modelWeigh, portIp, modelTime)"
@@ -236,6 +246,7 @@
                                 depressed
                                 color="#50ABA3"
                                 class="no-caps bold -mt5 mb20"
+                                data-unq="weighscale-button-printWeightScale"
                                 @click="manualPrint(portIp)"
                             >
                                 <span class="text-white">
@@ -271,6 +282,7 @@
                                         <v-icon
                                             dark
                                             left
+                                            data-unq="weighscale-button-backDetail"
                                             class="black-ic"
                                         >
                                             mdi-arrow-left-bold
@@ -308,11 +320,13 @@
                         depressed
                         outlined
                         color="#EBEBEB"
+                        data-unq="weighscale-button-cancelDispose"
                         class="main-btn"
                     >
                         <span class="text-black80">No</span>
                     </v-btn>
                     <v-btn
+                        data-unq="weighscale-button-dispose"
                         @click="disposePacking()"
                         class="main-btn white--text"
                         depressed
@@ -343,6 +357,7 @@
                         @click="fulfill = false"
                         class="main-btn white--text"
                         depressed
+                        data-unq="weighscale-button-closeFulfill"
                         color="#50ABA3"
                     >Ok</v-btn>
                 </v-card-actions>
