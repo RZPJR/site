@@ -72,26 +72,4 @@ export default [
             ],
         }
     },
-    // {
-    //     path: '/site/packing-order/update/:id',
-    //     name: 'PackingOrderUpdate',
-    //     component: () => import("./Update"),
-    //     meta: {
-    //         auth: true,
-    //         title: 'Update Packing Order',
-    //         breadcrumbs : [
-    //             {
-    //                 text: 'Packing Order List',
-    //                 to : '/site/packing-order'
-    //             },
-    //             {
-    //                 text: 'Packing Order Detail',
-    //                 to : '/site/packing-order/detail/:id'
-    //             },
-    //             {
-    //                 text: 'Update Packing Order',
-    //             },
-    //         ],
-    //     }
-    // },
 ]
