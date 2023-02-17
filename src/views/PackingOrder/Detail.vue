@@ -54,10 +54,10 @@
                 </v-col>
             </v-row>
             <v-row>
-                <v-col cols="12" md="6" class="-mt24">
+                <v-col cols="12" md="6" class="mt24">
                     <DetailRowNew :name="'Region'" :value="data.region.name"/>
                 </v-col>
-                <v-col cols="12" md="6" class="-mt24">
+                <v-col cols="12" md="6" class="mt24">
                     <DetailRowNew :name="'Site'" :value="data.site.name"/>
                 </v-col>
                 <v-col cols="12" md="6" class="-mt24">
