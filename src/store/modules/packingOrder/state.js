@@ -43,21 +43,23 @@ const state = {
         {
             text:'Delivery Date',
             class: 'grey--text text--darken-4',
+            width: "15%",
             sortable: false
         },
         {
             text:'Note',
             class: 'grey--text text--darken-4',
+            width: "25%",
             sortable: false
         },
         {
             text:'Status',
             class: 'grey--text text--darken-4',
-            width: "10%",
+            width: "3%",
             sortable: false
         },
         {
-            width: "5%",
+            width: "2%",
             class: 'grey--text text--darken-4',
             sortable: false
         },
