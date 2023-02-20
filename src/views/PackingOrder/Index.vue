@@ -167,10 +167,10 @@
         >
             <template v-slot:item="props">
                 <tr style="height:48px">
-                    <td>{{ props.item.code }}</td>
-                    <td>{{ props.item.site.code }} - {{ props.item.site.name }}</td>
-                    <td>{{ formatDate(props.item.delivery_date) }}</td>
-                    <td>{{ props.item.note }}</td>
+                    <td>{{ props.item.code ? props.item.code : '-' }}</td>
+                    <td>{{ props.item.site.code ? props.item.site.code : '-' }} - {{ props.item.site.name ? props.item.site.name : '-' }}</td>
+                    <td>{{ props.item.delivery_date ? formatDate(props.item.delivery_date) : '-' }}</td>
+                    <td>{{ props.item.note ? props.item.note : '-' }}</td>
                     <td>
                         <div v-if="props.item.status == 1">
                             <v-chip
