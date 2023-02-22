@@ -14,14 +14,14 @@ const api2 = axios.create({
 });
 
 const HTTP = {
-  get(url, data, api2) {
-    return api2 ? api2.get(`${url}`, data) : api.get(`${url}`, data);
+  get(url, data, use_api2) {
+    return use_api2 ? api2.get(`${url}`, data) : api.get(`${url}`, data);
   },
-  post(url, data, api2) {
-    return api2 ? api2.post(`${url}`, data) : api.get(`${url}`, data);
+  post(url, data, use_api2) {
+    return use_api2 ? api2.post(`${url}`, data) : api.post(`${url}`, data);
   },
-  put(url, data, api2) {
-    return api2 ? api2.put(`${url}`, data) : api.get(`${url}`, data);
+  put(url, data, use_api2) {
+    return use_api2 ? api2.put(`${url}`, data) : api.put(`${url}`, data);
   },
   init() {
     // Intercept the request to make sure the token is injected into the header.
