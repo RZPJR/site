@@ -27,6 +27,7 @@ const actions = {
             }
             const response = await http.get('/packing_order', {params: {
                 per_page:100,
+                order_by:'-id',
                 search: search,
                 site_id: warehouse,
                 status: status,
