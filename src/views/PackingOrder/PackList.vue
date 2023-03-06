@@ -4,7 +4,7 @@
             <v-row>
                 <v-col cols="12" md="4" class="h70">
                     <v-tooltip bottom>
-                        <template v-slot:activator="{ on: tooltip }" v-privilege="'filter_rdl'">
+                        <template v-slot:activator="{ on: tooltip }">
                             <v-text-field
                                 dense
                                 v-model="filter.search"
@@ -58,10 +58,10 @@
                 </v-col>
             </v-row>
             <v-row v-if="showFilter">
-                <v-col cols="12" md="3" class="mt24">
+                <v-col cols="12" md="3">
                     <v-menu
                         ref="menu"
-                        v-model="delivery_date.model"
+                        v-model="packing_date.model"
                         :close-on-content-click="false"
                         transition="scale-transition"
                         offset-y
@@ -70,14 +70,13 @@
                         <template v-slot:activator="{ on }">
                             <div v-on="on">
                                 <v-text-field
+                                    data-unq="packingorder-filter-deliveryDate"
                                     prepend-inner-icon="mdi-calendar"
                                     outlined
-                                    name="filter_delivery_date"
-                                    clearable
-                                    data-unq="packingorder-filter-deliveryDate"
-                                    @click:clear="delivery_date.value = [],fetchPackList()"
-                                    v-model="delivery_date.input"
                                     maxlength="24"
+                                    clearable
+                                    @click:clear="packing_date.value = [],fetchPackList()"
+                                    v-model="packing_date.input"
                                     dense
                                 >
                                     <template v-slot:label>
@@ -87,23 +86,20 @@
                             </div>
                         </template>
                         <v-date-picker
+                            data-unq="packingorder-filter-deliveryDateOK"
                             range
-                            persistent-hint
-                            v-model="delivery_date.value"
+                            v-model="packing_date.value"
                         >
-                        <v-spacer></v-spacer>
+                            <v-spacer></v-spacer>
                             <v-btn
                                 text
                                 color="primary"
-                                data-unq="packingorder-filter-deliveryDateOK"
-                                @click="delivery_date.model = false,fetchPackList()"
-                            >
-                                OK
-                            </v-btn>
+                                @click="packing_date.model = false,fetchPackList()"
+                            >OK</v-btn>    
                         </v-date-picker>
                     </v-menu>
                 </v-col>
-                <v-col cols="12" md="3" class="mt24">
+                <v-col cols="12" md="3">
                     <SelectWarehouse
                         :norequired="true"
                         :aux_data="2"
@@ -114,7 +110,7 @@
                         :dense="true"
                     ></SelectWarehouse>
                 </v-col>
-                <v-col cols="12" md="3" class="mt24">
+                <v-col cols="12" md="3">
                     <SelectProduct
                         :norequired="true"
                         name:="filter_product"
@@ -279,7 +275,7 @@
                 pack_list: state => state.packingOrder.pack_list,
                 table_header: state => state.packingOrder.pack_list.table_headers,
                 filter: state => state.packingOrder.pack_list.filter,
-                delivery_date: state => state.packingOrder.pack_list.filter.delivery_date,
+                packing_date: state => state.packingOrder.pack_list.filter.packing_date,
             }),
         },
         methods: {
@@ -370,17 +366,17 @@
             },
             //select warehouse by d
             warehouseSelected(d) {
-                this.filter.SelectWarehouse = ""
+                this.filter.select_warehouse = ""
                 if (d) {
-                    this.SelectWarehouse = d.id
+                    this.filter.select_warehouse = d.id
                 }
                 this.fetchPackList()
             },
             //select warehouse by id
             productSelected(d) {
-                this.filter.SelectProduct = ""
+                this.filter.select_product = ""
                 if (d) {
-                    this.SelectProduct = d.id
+                    this.filter.select_product = d.id
                 }
                 this.fetchPackList()
             },
@@ -396,43 +392,37 @@
                 },
                 deep: true
             },
-            'delivery_date.input': {
+            // For filter by date input format
+            'packing_date.input': {
                 handler: function (val) {
                     if (val) {
                         if (val.length == 10) {
                             let valid = this.$moment(val, 'YYYY-MM-DD', true).isValid()
                             if (valid == true) {
-                                this.delivery_date.value[0] = this.$moment(val).format('YYYY-MM-DD')
-                                this.fetchPackList()
+                                this.packing_date.value[0] = this.$moment(val).format('YYYY-MM-DD')
                             }
                         } else if (val.length == 24) {
-                            let date1 = val.substr(0,10)
-                            let date2 = val.substr(14,23)
+                            let date1 = val.substr(0, 10)
+                            let date2 = val.substr(14, 23)
                             let valid1 = this.$moment(date1, 'YYYY-MM-DD', true).isValid()
                             let valid2 = this.$moment(date2, 'YYYY-MM-DD', true).isValid()
                             if (valid1 == true && valid2 == true) {
-                                let date3 = new Date(this.delivery_date.value[0])
-                                let date4 = new Date(this.delivery_date.value[1])
-                                if (parseInt((date4-date3)/(24*3600*1000)) > 6 || parseInt((date4-date3)/(24*3600*1000)) < -6) {
-                                    if (date4 < date3) {
-                                        this.delivery_date.value[0] = this.$moment(date3).format('YYYY-MM-DD')
-                                        this.delivery_date.value.splice(1,1)
-                                    } else {
-                                        this.delivery_date.value[0] = this.$moment(date3).format('YYYY-MM-DD')
-                                        this.delivery_date.value.splice(1,1)
-                                    }
-                                    this.fetchPackList()
-                                } 
+                                this.packing_date.value[0] = this.$moment(date1).format('YYYY-MM-DD')
+                                this.packing_date.value[1] = this.$moment(date2).format('YYYY-MM-DD')
+                                if (this.packing_date.value.length == 2) {
+                                    this.fetchNotification()
+                                }
                             }
                         }
                     }
                 },
                 deep: true
             },
-            'delivery_date.value': {
+            // For filter by date input value
+            'packing_date.value': {
                 handler: function (val) {
                     if (val) {
-                        this.delivery_date_input = this.formatDateRange(val)
+                        this.packing_date.input = this.formatDateRange(val)
                     }
                 },
                 deep: true

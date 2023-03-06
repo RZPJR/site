@@ -6,7 +6,7 @@ const actions = {
         commit("setPackingOrderList", [])
         try {
             let search = state.packing_order_list.filter.search
-            let warehouse = !state.packing_order_list.filter.SelectWarehouse ? '' : state.packing_order_list.filter.SelectWarehouse
+            let warehouse = !state.packing_order_list.filter.select_warehouse ? '' : state.packing_order_list.filter.select_warehouse
             let status = state.packing_order_list.filter.statuses === 999 ? '' : state.packing_order_list.filter.statuses
             let delivery_date_from = ''
             let delivery_date_to = ''
@@ -72,22 +72,23 @@ const actions = {
         commit("setPackList", [])
         try {
             let search = state.pack_list.filter.search
-            let site = !state.pack_list.filter.SelectWarehouse ? '' : state.pack_list.filter.SelectWarehouse
-            let item = !state.pack_list.filter.SelectProduct ? '' : state.pack_list.filter.SelectProduct
-            let delivery_date_from = ''
-            let delivery_date_to = ''
-            if (state.pack_list.filter.delivery_date.value.length > 0) {
-                if (state.pack_list.filter.delivery_date.value.length == 1) {
-                delivery_date_from = state.pack_list.filter.delivery_date.value[0]
+            let site = !state.pack_list.filter.select_warehouse ? '' : state.pack_list.filter.select_warehouse
+            let item = !state.pack_list.filter.select_product ? '' : state.pack_list.filter.select_product
+            let packing_date_from = ''
+            let packing_date_to = ''
+            if (state.pack_list.filter.packing_date.value.length > 0) {
+                if (state.pack_list.filter.packing_date.value.length == 1) {
+                packing_date_from = state.pack_list.filter.packing_date.value[0]
+                packing_date_to = state.pack_list.filter.packing_date.value[0]
                 } else {
-                    let date = state.pack_list.filter.delivery_date.value[0]
-                    let date2 = state.pack_list.filter.delivery_date.value[1]
+                    let date = state.pack_list.filter.packing_date.value[0]
+                    let date2 = state.pack_list.filter.packing_date.value[1]
                     if (date > date2) {
-                        delivery_date_from = date2
-                        delivery_date_to = date
+                        packing_date_from = date2
+                        packing_date_to = date
                     } else {
-                        delivery_date_from = date
-                        delivery_date_to = date2
+                        packing_date_from = date
+                        packing_date_to = date2
                     }
                 }
             }
@@ -96,8 +97,8 @@ const actions = {
                 search: search,
                 site_id: site,
                 item_id: item,
-                packing_date_from: delivery_date_from,
-                packing_date_to: delivery_date_to
+                packing_date_from: packing_date_from,
+                packing_date_to: packing_date_to
             }});
             commit("setPackList", response.data.data)
             if(response.data.data == null){

@@ -277,9 +277,9 @@
                 }
             },
             warehouseSelected(d) {
-                this.filter.SelectWarehouse = ""
+                this.filter.select_warehouse = ""
                 if (d) {
-                    this.filter.SelectWarehouse = d.id
+                    this.filter.select_warehouse = d.id
                 }
                 this.fetchPackingOrderList()
             },
