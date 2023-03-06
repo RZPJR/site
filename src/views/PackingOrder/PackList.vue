@@ -255,7 +255,6 @@
                 dispose_modal: false,
                 show_filter: false,
                 loading: false,
-                overlay: false,
                 packing_id: '',
                 product_id: '',
                 pack_type: 0,
