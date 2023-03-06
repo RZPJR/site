@@ -28,8 +28,8 @@
                     <v-btn 
                         depressed
                         x-small
-                        @click="showFilter = !showFilter"
-                        v-if="showFilter"
+                        @click="show_filter = !show_filter"
+                        v-if="show_filter"
                         data-unq="packingorder-button-hide"
                         class="no-caps fs12"
                     >
@@ -43,7 +43,7 @@
                     <v-btn 
                         depressed
                         x-small
-                        @click="showFilter = !showFilter"
+                        @click="show_filter = !show_filter"
                         v-else
                         data-unq="packingorder-button-show"
                         class="no-caps fs12"
@@ -57,7 +57,7 @@
                     </v-btn>
                 </v-col>
             </v-row>
-            <v-row v-if="showFilter">
+            <v-row v-if="show_filter">
                 <v-col cols="12" md="3">
                     <v-menu
                         ref="menu"
@@ -140,7 +140,7 @@
                         </span>
                     </td>
                     <td :data-unq="`packlist-value-uom-${props.index}`">{{ props.item.item.uom.name }}</td>
-                    <td :data-unq="`packlist-value-packType-${props.index}`">{{ props.item.pack_type }}</td>
+                    <td :data-unq="`packlist-value-pack_type-${props.index}`">{{ props.item.pack_type }}</td>
                     <td :data-unq="`packlist-value-weightScale-${props.index}`">{{ props.item.weight_scale }}</td>
                     <td :data-unq="`packlist-value-deliveryDate-${props.index}`">{{ formatDate(props.item.packing_order.delivery_date) }}</td>
                     <td>
@@ -201,12 +201,12 @@
         </v-data-table>
         </div>
         <v-dialog
-            v-model="disposeModal"
+            v-model="dispose_modal"
             persistent
             max-width="470px"
         >
             <v-card class="OpenSans">
-                <LoadingBar :value="loadingDispose"/>
+                <LoadingBar :value="loading_dispose"/>
                 <v-card-title>
                     <span class="text-title-modal">
                         Dispose Packing
@@ -214,14 +214,14 @@
                 </v-card-title>
                 <v-card-text>
                     <span class="fs16 mt-1">
-                        Are you sure to dispose <b>{{ this.PackingCode }}</b> <br> <br>
-                        Note: Make sure you tear the printout from code <b>{{ this.PackingCode }}</b> if it has been cancelled
+                        Are you sure to dispose <b>{{ this.packing_code }}</b> <br> <br>
+                        Note: Make sure you tear the printout from code <b>{{ this.packing_code }}</b> if it has been cancelled
                     </span>
                 </v-card-text>
                 <v-card-actions class="pb-4">
                 <v-spacer></v-spacer>
                     <v-btn
-                        @click="disposeModal = false"
+                        @click="dispose_modal = false"
                         depressed
                         outlined
                         data-unq="packingorder-button-no"
@@ -251,21 +251,23 @@
         data() {
             return {
                 overlay: false,
-                loadingDispose: false,
-                disposeModal: false,
-                showFilter: false,
+                loading_dispose: false,
+                dispose_modal: false,
+                show_filter: false,
                 loading: false,
                 overlay: false,
-                PackingId: '',
-                ProductId: '',
-                PackType: 0,
-                PackingCode: '',
-                websocketPrint: null,
-                connectedPrint: false,
+                packing_id: '',
+                product_id: '',
+                pack_type: 0,
+                packing_code: '',
+                websocket_print: null,
+                connected_print: false,
             }
         },
         created(){
             this.printConnection()
+            this.$store.commit("setWarehouseFilterList", "")
+            this.$store.commit("setItemFilterList", "")
         },
         mounted() {
             this.fetchPackList()
@@ -287,19 +289,19 @@
                 'setItemFilterList'
             ]),
             disposePopup(pc_id,prd_id,pack,code){
-                this.PackingId = pc_id
-                this.ProductId = prd_id
-                this.PackType = pack
-                this.PackingCode = code
-                this.disposeModal = true
+                this.packing_id = pc_id
+                this.product_id = prd_id
+                this.pack_type = pack
+                this.packing_code = code
+                this.dispose_modal = true
             },
             //to dispose printed packing if error occured in the warehouse
             disposePacking(){
-                this.loadingDispose = true
-                this.$http.delete("/site/v1/packing_order/pack/dispose/"+this.PackingId,{
+                this.loading_dispose = true
+                this.$http.delete("/site/v1/packing_order/pack/dispose/"+this.packing_id,{
                     data:{
-                        item_id: this.ProductId,
-                        pack_type: this.PackType,
+                        item_id: this.product_id,
+                        pack_type: this.pack_type,
                     }
                 })
                 .then(response => {
@@ -309,15 +311,15 @@
                         type: 'success',
                     });
                     this.fetchPackList()
-                    this.loadingDispose = false
-                    this.disposeModal = false
+                    this.loading_dispose = false
+                    this.dispose_modal = false
                 })
             },
             //connection method to websocket for print
             printConnection(){
-                this.websocketPrint = new WebSocket("ws://127.0.0.1:12212/printer")
-                this.websocketPrint.onopen = this.onConnectPrint
-                this.websocketPrint.onclose = this.onDisconnectPrint
+                this.websocket_print = new WebSocket("ws://127.0.0.1:12212/printer")
+                this.websocket_print.onopen = this.onConnectPrint
+                this.websocket_print.onclose = this.onDisconnectPrint
             },
             //reconnect websocket if disconnected or idle for print 
             reconnectPrint(){
@@ -327,24 +329,24 @@
             submitDataToWebSocket(data){
                 if (Array.isArray(data)) {
                     data.forEach(function (element) {
-                        this.websocketPrint.send(JSON.stringify(element));
+                        this.websocket_print.send(JSON.stringify(element));
                     });
                 } else {
-                    this.websocketPrint.send(JSON.stringify(data));
+                    this.websocket_print.send(JSON.stringify(data));
                 }
             },
             //show status connected if onconnect for print
             onConnectPrint(){
-                this.connectedPrint = true
+                this.connected_print = true
             },
             //show status disconnected if ondisconnect and try to reconnect to the websocket for print
             onDisconnectPrint(){
-                this.connectedPrint = false
+                this.connected_print = false
                 this.reconnectPrint()
             },
             //is websocket connected print
-            isConnectedPrint(){
-                return this.connectedPrint
+            isconnected_print(){
+                return this.connected_print
             },
             //to print label to through the websocket
             printLabel(pc_id,prd_id,pack){
@@ -356,7 +358,7 @@
                     weight_scale: 0
                 })
                 .then(response => {
-                    if(this.isConnectedPrint()){
+                    if(this.isconnected_print()){
                         this.submitDataToWebSocket({
                             'type': 'LABEL',
                             'url': response.data.data.link_print
