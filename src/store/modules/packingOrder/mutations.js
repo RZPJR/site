@@ -8,15 +8,15 @@ const mutations = {
       state.packing_order_list.isLoading = payload;
       return state;
     },
-    setWarehouseFilterList: function(state, payload){
-      state.packing_order_list.filter.SelectWarehouse = payload;
+    setWarehousePackingOrderList: function(state, payload){
+      state.packing_order_list.filter.select_warehouse = payload;
       return state;
     },
     // #endregion Readlist Packing Order
 
     // #region Detail Packing Order
     setWeighScale: function(state, payload) {
-      state.packing_order_detail.WeighScale = payload
+      state.packing_order_detail.weigh_scale = payload
       return state;
     },
     setPackingOrderDetail: function(state, payload) {
@@ -41,7 +41,11 @@ const mutations = {
       return state;
     },
     setWarehouseFilterList: function(state, payload){
-      state.pack_list.filter.SelectWarehouse = payload;
+      state.pack_list.filter.select_warehouse = payload;
+      return state;
+    },
+    setItemFilterList: function(state, payload){
+      state.pack_list.filter.select_product = payload;
       return state;
     },
     // #endregion Readlist Pack List
