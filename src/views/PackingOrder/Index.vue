@@ -221,7 +221,7 @@
     </v-container>
 </template>
 <script>
-    import { mapState, mapActions } from 'vuex';
+    import { mapState, mapActions, mapMutations } from "vuex";
     export default {
         name: "PackingOrder",
         data() {
@@ -252,6 +252,9 @@
             ...mapActions ([
                 'fetchPackingOrderList',
             ]),
+            ...mapMutations([
+                'setWarehousePackingOrderList'
+            ]),
             //cancel packing
             cancel(id) {
                 this.ConfirmData = {
@@ -277,9 +280,9 @@
                 }
             },
             warehouseSelected(d) {
-                this.filter.select_warehouse = ""
+                this.$store.commit("setWarehousePackingOrderList", "")
                 if (d) {
-                    this.filter.select_warehouse = d.id
+                    this.$store.commit("setWarehousePackingOrderList", d.id)
                 }
                 this.fetchPackingOrderList()
             },

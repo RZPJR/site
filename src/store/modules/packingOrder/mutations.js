@@ -8,7 +8,7 @@ const mutations = {
       state.packing_order_list.isLoading = payload;
       return state;
     },
-    setWarehouseFilterList: function(state, payload){
+    setWarehousePackingOrderList: function(state, payload){
       state.packing_order_list.filter.select_warehouse = payload;
       return state;
     },
@@ -42,6 +42,10 @@ const mutations = {
     },
     setWarehouseFilterList: function(state, payload){
       state.pack_list.filter.select_warehouse = payload;
+      return state;
+    },
+    setItemFilterList: function(state, payload){
+      state.pack_list.filter.select_product = payload;
       return state;
     },
     // #endregion Readlist Pack List

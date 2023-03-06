@@ -244,7 +244,7 @@
     </v-container>
 </template>
 <script>
-    import { mapState, mapActions } from "vuex";
+    import { mapState, mapActions, mapMutations } from "vuex";
     import Vue from 'vue'
     export default {
         name: "PackList",
@@ -281,6 +281,10 @@
         methods: {
             ...mapActions ([
                 'fetchPackList',
+            ]),
+            ...mapMutations([
+                'setWarehouseFilterList',
+                'setItemFilterList'
             ]),
             disposePopup(pc_id,prd_id,pack,code){
                 this.PackingId = pc_id
@@ -366,17 +370,17 @@
             },
             //select warehouse by d
             warehouseSelected(d) {
-                this.filter.select_warehouse = ""
+                this.$store.commit("setWarehouseFilterList", "")
                 if (d) {
-                    this.filter.select_warehouse = d.id
+                    this.$store.commit("setWarehouseFilterList", d.id)
                 }
                 this.fetchPackList()
             },
             //select warehouse by id
             productSelected(d) {
-                this.filter.select_product = ""
+                this.$store.commit("setItemFilterList", "")
                 if (d) {
-                    this.filter.select_product = d.id
+                    this.$store.commit("setItemFilterList", d.id)
                 }
                 this.fetchPackList()
             },
