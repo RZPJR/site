@@ -303,7 +303,6 @@
             ...mapActions([
                 'fetchStableTime',
                 'fetchProductDetail',
-                'fetchProductDetail',
             ]),
             ...mapMutations([
                 'setWeighPort',

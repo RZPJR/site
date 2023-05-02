@@ -1,11 +1,9 @@
 import http from "../../../services/http";
-import axios from "axios";
 
 const actions = {
     fetchStableTime: async ({ commit, state }, payload) => {
-        let API_URL = process.env.VUE_APP_API_URL_BASE;
         try {
-            const response = await axios.get(API_URL + "/configuration/v1/app", {
+            const response = await http.get("/configuration/v1/app", {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem("bearer")}`
                 },
@@ -16,7 +14,7 @@ const actions = {
                     order_by: '-id',
                     attribute: payload.type
                 }
-            })
+            }, true)
             if(response.data.data) {
                 let data = response.data.data
                 for (let i = 0; i < data.length; i++) {
@@ -34,19 +32,32 @@ const actions = {
     },
     fetchProductDetail: async ({ commit, state, dispatch }, payload) => {
         const {id} = payload
-        commit('setLoading', true)
-        commit('setScanned', false)
+        // commit('setLoading', true)
+        // commit('setScanned', false)
+        commit('setFilterSetting', {
+            ...state.checker_weigh_scale.filter, 
+            loading: true,
+            scanned: false,
+        })
         try {
             const response = await http.get('/checker_weight_scale/' + id);
             if(response.data.data){
-                commit('setLoading', false)
-                commit('setScanned', true)
-                commit('setFilterSetting', {search_prd: ''})
+                // commit('setLoading', false)
+                // commit('setScanned', true)
+                commit('setFilterSetting', {
+                    ...state.checker_weigh_scale.filter, 
+                    loading: false,
+                    scanned: true,
+                    search_prd: ''
+                })
                 commit('setData', {...state.checker_weigh_scale.data, product: response.data.data})
                 // dispatch('fetchStableTime', {'type': 'percentage_kg_picking_tolerance'}) DONOT REMOVE, KEEP FOR REFERENCE
             }
         } catch (error) {
-            commit('setLoading', false)
+            commit('setFilterSetting', {
+                ...state.checker_weigh_scale.filter, 
+                loading: false,
+            })
             commit('setFilterSetting', {search_prd: ''})
         }
     },

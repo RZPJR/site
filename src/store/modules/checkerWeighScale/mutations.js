@@ -23,7 +23,8 @@ const mutations = {
   },
   // set filter setting
   setFilterSetting: function(state, payload) {
-    state.checker_weigh_scale.filter = { ...state.checker_weigh_scale.filter, ...payload };
+    // state.checker_weigh_scale.filter = { ...state.checker_weigh_scale.filter, ...payload }; 
+    state.checker_weigh_scale.filter = payload;
     return state;
   },
   // set websocket setting
