@@ -45,6 +45,7 @@
                         @click="showFilter = !showFilter"
                         v-if="showFilter"
                         class="no-caps fs12"
+                        data-unq="weighscale-button-hideFilter"
                     >
                         Hide
                         <v-icon right>
@@ -57,6 +58,7 @@
                         @click="showFilter = !showFilter"
                         v-else
                         class="no-caps fs12"
+                        data-unq="weighscale-button-showFilter"
                     >
                         Show
                         <v-icon right>
@@ -71,6 +73,7 @@
                         v-model="printSetting.modelWeigh"
                         outlined
                         label="Select Weight Scale"
+                        data-unq="weighscale-filter-selectWeightScale"
                         :items="printSetting.selectWeigh"
                         :dense="true"
                     ></v-select>
@@ -83,6 +86,7 @@
                                 name="search"
                                 label="IP Address"
                                 single-line
+                                data-unq="weighscale-input-ipAdress"
                                 class="-mt10"
                                 v-on="{ ...tooltip }"
                                 outlined
@@ -105,6 +109,7 @@
                 <v-col cols="12" md="4" class="mt1 mb20">
                     <v-btn
                         depressed
+                        data-unq="weighscale-button-setWeightScale"
                         color="#50ABA3"
                         class="no-caps bold mt3"
                         @click="setSetting(printSetting.modelWeigh, printSetting.ipAddress)"

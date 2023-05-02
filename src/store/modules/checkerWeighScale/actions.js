@@ -29,32 +29,18 @@ const actions = {
     },
     fetchProductDetail: async ({ commit, state, dispatch }, payload) => {
         const {id} = payload
-        // commit('setLoading', true)
-        // commit('setScanned', false)
-        commit('setFilterSetting', {
-            ...state.checker_weigh_scale.filter, 
-            loading: true,
-            scanned: false,
-        })
+        commit('setLoading', true)
+        commit('setScanned', false)
         try {
             const response = await http.get('/checker_weight_scale/' + id);
             if(response.data.data){
-                // commit('setLoading', false)
-                // commit('setScanned', true)
-                commit('setFilterSetting', {
-                    ...state.checker_weigh_scale.filter, 
-                    loading: false,
-                    scanned: true,
-                    search_prd: ''
-                })
+                commit('setLoading', false)
+                commit('setScanned', true)
                 commit('setData', {...state.checker_weigh_scale.data, product: response.data.data})
                 // dispatch('fetchStableTime', {'type': 'percentage_kg_picking_tolerance'}) DONOT REMOVE, KEEP FOR REFERENCE
             }
         } catch (error) {
-            commit('setFilterSetting', {
-                ...state.checker_weigh_scale.filter, 
-                loading: false,
-            })
+            commit('setLoading', false)
             commit('setFilterSetting', {search_prd: ''})
         }
     },
