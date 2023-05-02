@@ -4,9 +4,6 @@ const actions = {
     fetchStableTime: async ({ commit, state }, payload) => {
         try {
             const response = await http.get("/configuration/v1/app", {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem("bearer")}`
-                },
                 params: {
                     page: 1,
                     per_page: 100,

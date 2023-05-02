@@ -44,6 +44,16 @@ const HTTP = {
       }
     );
 
+    api2.interceptors.request.use(config => {
+      const token = localStorage.getItem("bearer");
+      if (token !== "" || token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      } else {
+        window.location.replace("/auth");
+      }
+      return config;
+    });
+
     api2.interceptors.response.use(
       response => {
         return response;
