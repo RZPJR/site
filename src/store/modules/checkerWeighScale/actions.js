@@ -86,7 +86,6 @@ const actions = {
             commit('setLoading', false)
         }
     },
-
 }
 
 export default actions;
