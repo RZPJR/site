@@ -36,12 +36,13 @@ const actions = {
             if(response.data.data){
                 commit('setLoading', false)
                 commit('setScanned', true)
+                commit('setFilterSetting', {...state.checker_weigh_scale.filter, search_prd: ''})
                 commit('setData', {...state.checker_weigh_scale.data, product: response.data.data})
                 // dispatch('fetchStableTime', {'type': 'percentage_kg_picking_tolerance'}) DONOT REMOVE, KEEP FOR REFERENCE
             }
         } catch (error) {
             commit('setLoading', false)
-            commit('setFilterSetting', {search_prd: ''})
+            commit('setFilterSetting', {...state.checker_weigh_scale.filter, search_prd: ''})
         }
     },
 
