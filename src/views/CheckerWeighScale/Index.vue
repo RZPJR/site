@@ -322,11 +322,12 @@
                 this.fetchStableTime({'type': 'stable_weighing_time_second'})
             },
             // checking browser tab
-            checkBrowserTab() { // using vuex
+            checkBrowserTab() {
+                this.$store.commit('setWebsocketSetting', {...this.websocketSetting, checkBrowser: false})
                 document.addEventListener("visibilitychange", function() {
                     if (document.hidden) {
                         this.$store.commit('setWebsocketSetting', {...this.websocketSetting, checkBrowser: false})
-                    }else{
+                    } else{
                         this.$store.commit('setWebsocketSetting', {...this.websocketSetting, checkBrowser: true})
                     }
                 });
