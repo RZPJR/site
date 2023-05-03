@@ -11,7 +11,7 @@ export default [
     {
         path: '/site/weigh-scale',
         name: 'WeighScale',
-        component: () => import("./WeighScale.vue"),
+        component: () => import("./WeighScale2.vue"),
         meta: {
             auth: true,
             title: 'Weigh Scale'

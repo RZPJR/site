@@ -110,6 +110,128 @@ const actions = {
             commit("setPreloadPackList", false)
         }
     },
+
+    // #Weigh Scale
+    // fetch Stable Time from Config APP
+    fetchStableTime: async ({ commit, state }, payload) => {
+        try {
+            const response = await http.get('/configuration/v1/app', {
+                params: {
+                    page: 1,
+                    per_page: 100,
+                    status: 1,
+                    order_by: '-id',
+                    attribute: payload.type
+                }
+            }, true)
+            if(response.data.data) {
+                let data = response.data.data
+                for (let i = 0; i < data.length; i++) {
+                    if (payload.type === "stable_weighing_time_second") {
+                        if(data[i].attribute === payload.type){
+                            let temp_stable = data[i].value
+                            commit('setPrintSetting', {...state.weigh_scale.printSetting, stable_weighing_time_second: temp_stable})
+                        }
+                    }
+                }
+            }
+        } catch (error) {
+            console.error(error)
+        }
+    },
+    // fetch packing detail
+    fetchPackDetail: async ({ commit, state, dispatch }, payload) => {
+        try {
+            const response = await http.get('/packing_order/pack/' + payload.data.packing_id, {
+                params: {
+                    item_id: payload.data.product_id,
+                    pack_type: payload.data.pack_type,
+                }
+            });
+            if(response.data.data){
+                commit('setData', 
+                    {...state.weigh_scale.data,
+                        product: response.data.data,
+                        actual_total_pack: response.data.data.actual_total_pack,
+                        expected_total_pack: response.data.data.expected_total_pack,
+                        tolerance: response.data.data.pack_type
+                    }
+                );
+                if (state.weigh_scale.data.product.actual_total_pack === state.weigh_scale.data.product.expected_total_pack) {
+                    commit('setPrintSetting', {...state.weigh_scale.printSetting, finished: true})
+                }
+                const res = await http.get('/configuration/v1/app', {
+                    params: {
+                        orderby: '-id',
+                    }
+                }, true);
+                if(res.data.data){
+                    let data = res.data.data
+                    for (let i = 0; i < data.length; i++) {
+                        let temp = data[i]
+                        if (temp.attribute === "percentage_packing_tolerance") {
+                            let temp_tolerance = temp.value
+                            let pct = (temp_tolerance / 100) * state.weigh_scale.data.tolerance
+                            commit('setData', {
+                                ...state.weigh_scale.data, 
+                                aboveTolerance: state.weigh_scale.data.tolerance + pct, 
+                                belowTolerance: state.weigh_scale.data.tolerance - pct
+                            })
+                        }
+                    }
+                }
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    },
+    // weigh scale
+    fetchWeighScale: async ({ commit, state, dispatch }, payload) => {
+        commit('setFilterSetting', {...state.weigh_scale.filterSetting, loading: true})
+        try {
+            const response = await http.put("/site/v1/packing_order/pack/update/" + payload.data.packing_id, {
+                item_id: payload.data.product_id,
+                pack_type: payload.data.pack_type,
+                type_print: 1
+            })
+            .then(response => {
+                // CREATE NEW STATE AND MUTATION SUBMIT DATA WEBSOCKET
+                if (state.weigh_scale.webSocketSetting.connectedPrint) {
+                    // this.submitDataToWebSocket({
+                    //     'type' : 'LABEL',
+                    //     'url' : response.data.data.link_print,
+                    // })
+                    commit('setDataWebSocket', {
+                        'type' : 'LABEL',
+                        'url' : response.data.data.link_print,
+                    })
+                } else {
+                    alert('Automatic print is disconnected. Please try to reconnect the whb.exe or contact admin, press OK to manually print the Label');
+                    window.open(response.data.data.link_print, '_blank');
+                }
+                commit('setFilterSetting', {...state.weigh_scale.filterSetting, packing_code: response.data.data.code})
+                if (state.weigh_scale.filter.packing_code === '') {
+                    commit('setFilterSetting', {...state.weigh_scale.filterSetting, packing_code: ''})
+                }
+                commit('setData', 
+                    {
+                        ...state.weigh_scale.data, 
+                        product: {
+                            actual_total_pack: response.data.data.actual_total_pack,
+                            expected_total_pack: response.data.data.expected_total_pack,
+                        }
+                    }
+                )
+                commit('setPrintSetting', {...state.weigh_scale.printSetting, manual: false})
+                commit('setFilterSetting', {...state.weigh_scale.filterSetting, loading: false, alert: true, caution: true})
+                if (state.weigh_scale.data.product.actual_total_pack === state.weigh_scale.data.product.expected_total_pack) {
+                    commit('setPrintSetting', {...state.weigh_scale.printSetting, finished: true})
+                }
+            })
+        } catch (error) {
+            commit('setFilterSetting', {...state.weigh_scale.filterSetting, loading: false, fulfill: true})
+        }
+    },
 }
 
 export default actions;

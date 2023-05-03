@@ -644,6 +644,7 @@
                     this.buffer = this.buffer + chr;
                 }
             },
+            // CREATE NEW STATE AND MUTATION FOR SUBMIT DATA WEBSOCKET
             //submit data after weight scale to printer
             submitDataToWebSocket(data){
                 if (Array.isArray(data)) {
