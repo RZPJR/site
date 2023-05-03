@@ -334,7 +334,7 @@
                     }
                 });
             },
-            //to select Settings (Weigh and IP)
+            //to select Settings (Weigh & IP)
             setSetting(weigh, ip) {
                 if (ip) {
                     this.$store.commit('setWeighPort', weigh)
