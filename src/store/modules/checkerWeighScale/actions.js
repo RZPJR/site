@@ -49,7 +49,7 @@ const actions = {
                         let temp = data[i]
                         if(temp.attribute === 'percentage_kg_picking_tolerance'){
                             let temp_tolerance = temp.value
-                            let moq = 0.1
+                            let moq = state.checker_weigh_scale.data.product.order_min_qty
                             let pct1 = (temp_tolerance / 100) * moq
                             let pct2 = (temp_tolerance / 100) * state.checker_weigh_scale.data.product.order_qty
                             commit('setData', {
