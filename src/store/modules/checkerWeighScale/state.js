@@ -36,8 +36,6 @@ const state = {
             aboveTolerance: 0,
             belowTolerance: 0,
             belowWeight:true,
-            tolerance1: 0,
-            tolerance2: 0,
             stable_weighing_time_second: 0,
             modelWeigh: '',
             ipAddress: '127.0.0.1',
@@ -87,6 +85,8 @@ const state = {
             data: 0,
             data2: 0,
             dataStore: [],
+            tolerance1: 0,
+            tolerance2: 0,
         }
     },
 };

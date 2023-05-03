@@ -252,7 +252,7 @@
             ...mapState({
                 checker_weigh_scale: state => state.checkerWeighScale.checker_weigh_scale,
                 filter: state => state.checkerWeighScale.checker_weigh_scale.filter,
-                websocketSetting: state => state.checkerWeighScale.checker_weigh_scale.websocket,
+                websocketSetting: state => state.checkerWeighScale.checker_weigh_scale.websocketSetting,
                 printSetting: state => state.checkerWeighScale.checker_weigh_scale.printSetting,
                 data: state => state.checkerWeighScale.checker_weigh_scale.data,
             }),
@@ -268,37 +268,38 @@
             let ip = localStorage.getItem('ip_port')
             // to get first data weigh and ip from local storage
             if (ip || weigh) {
-                this.$store.commit('setPrintSetting', {...this.printSetting, ipAddress: ip, modelWeigh: weigh})
+                self.$store.commit('setPrintSetting', {...this.printSetting, ipAddress: ip, modelWeigh: weigh})
             }
             //to increment ticker and check ticker condition if its more than 5 back to zero every 1 second
             setInterval(function(){
-                self.filter.ticker += 1
+                let ticker = self.filter.ticker += 1
+                self.$store.commit('setFilterSetting', {...self.filter, ticker: ticker})
                 if (self.filter.ticker > self.printSetting.stable_weighing_time_second) {
-                    self.filter.ticker = 0
+                    self.$store.commit('setFilterSetting', {...self.filter, ticker: 0})
                 }
             }, 1000)
             // paralel check condition again if its more than 5 back to zero to ensure every 1 second
             setInterval(function(){
                 if (self.filter.ticker > self.printSetting.stable_weighing_time_second) {
-                    self.filter.ticker = 0
+                    self.$store.commit('setFilterSetting', {...self.filter, ticker: 0})
                 }
             }, 1000)
             // paralel override data2 as data from weigh scale to check the equality ever 0.1 second
             setInterval(function() {
-                self.data.data2 = self.data
+                self.$store.commit('setData', {...self.data, data2: self.data.data})
             }, 100)
             // paralel check if data not the same as data2 it will go back to zero so it will not proceed anything yet every 0.15 second
             setInterval(function() {
                 if (self.data.data !== self.data.data2) {
-                    self.filter.ticker = 0
+                    self.$store.commit('setFilterSetting', {...self.filter, ticker: 0})
                 }
             }, 110);
             // paralel if its 5 second and data are the same it will proceed to do the automatic print through websocket every 1 second
             setInterval(function(){
                 if (self.filter.ticker == self.printSetting.stable_weighing_time_second && (self.data.data2 === self.data.data) && parseFloat(self.data.data) > 0 && self.printSetting.belowWeight == false && self.websocketSetting.checkBrowser == true && self.filter.scanned == true) {
-                    self.filter.ticker = 0
+                    self.$store.commit('setFilterSetting', {...self.filter, ticker: 0})
                     if(!self.filter.callPrint){
-                        self.filter.callPrint = true
+                        self.$store.commit('setFilterSetting', {...self.filter, callPrint: true})
                         self.weighScale()
                     }
                 }
@@ -308,6 +309,7 @@
             ...mapActions([
                 'fetchStableTime',
                 'fetchProductDetail',
+                'updateProduct',
             ]),
             ...mapMutations([
                 'setWeighPort',
@@ -323,12 +325,12 @@
             },
             // checking browser tab
             checkBrowserTab() {
-                this.$store.commit('setWebsocketSetting', {...this.websocketSetting, checkBrowser: false})
+                let vm = this
                 document.addEventListener("visibilitychange", function() {
                     if (document.hidden) {
-                        this.$store.commit('setWebsocketSetting', {...this.websocketSetting, checkBrowser: false})
+                        vm.$store.commit('setWebsocketSetting', {...vm.websocketSetting, checkBrowser: false})
                     } else{
-                        this.$store.commit('setWebsocketSetting', {...this.websocketSetting, checkBrowser: true})
+                        vm.$store.commit('setWebsocketSetting', {...vm.websocketSetting, checkBrowser: true})
                     }
                 });
             },
@@ -371,17 +373,41 @@
             },
             //after the weigh data stable it will go to this function to update the increment and automatically print packing label
             weighScale() {
-                console.log('weigh scale')
+                this.updateProduct({id: this.data.product.picking_order_item_id, data: this.filter.search})
             },
             //to show and modified the translated value on input
             onUpdate(weight) {
                 let that = this
                 that.data.data = JSON.parse(JSON.stringify(weight))
                 this.filter.search = weight.slice(2)
-                if (this.filter.search >= this.data.product.order_qty) {
-                    this.style = 'color: green;'
-                    this.icon = 'mdi-check-bold'
-                    this.belowWeight = false
+                if (this.filter.search >= this.data.product.order_qty && this.filter.search <= this.data.tolerance1){
+                    this.printSetting.style = 'color: green;'
+                    this.printSetting.icon = 'mdi-check-bold'
+                    this.printSetting.belowWeight = false
+                }
+                else if (this.filter.search >= this.tolerance1 && this.filter.search <= this.data.tolerance2){
+                    this.printSetting.style = 'color: yellow;'
+                    this.printSetting.icon = 'mdi-arrow-down-bold'
+                    this.printSetting.belowWeight = false
+                }
+                else if (this.filter.search > this.data.tolerance2){
+                    this.printSetting.style = 'color: red;'
+                    this.printSetting.icon = 'mdi-arrow-down-bold'
+                    this.printSetting.belowWeight = true
+                }
+                else if (this.filter.search > 0){
+                    this.printSetting.style = 'color: red;'
+                    this.printSetting.icon = 'mdi-arrow-up-bold'
+                    this.printSetting.belowWeight = true
+                }
+                else{
+                    this.printSetting.style = 'color: white;'
+                    this.printSetting.icon = ''
+                    this.filter.callPrint = false
+                    this.filter.caution = false
+                    this.printSetting.belowWeight = true
+                    this.filter.alert = false
+                    this.filter.finished = false
                 }
             },
             //show status connected if onconnect for weigh scale
