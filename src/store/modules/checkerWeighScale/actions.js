@@ -28,11 +28,11 @@ const actions = {
         }
     },
     fetchProductDetail: async ({ commit, state, dispatch }, payload) => {
-        const {id} = payload
+        let sliced_id = payload.id.slice(4)
         commit('setLoading', true)
         commit('setScanned', false)
         try {
-            const response = await http.get('/checker_weight_scale/' + id);
+            const response = await http.get('/checker_weight_scale/' + sliced_id);
             if(response.data.data){
                 commit('setFilterSetting', {...state.checker_weigh_scale.filter, search_prd: ''})
                 commit('setData', {...state.checker_weigh_scale.data, product: response.data.data})
