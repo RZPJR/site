@@ -261,6 +261,7 @@
             this.weighConnection()
             this.checkBrowserTab()
             this.checkStableTime()
+            this.getWebSocketWeighScale()
         },
         mounted() {
             let self = this
@@ -310,6 +311,7 @@
                 'fetchStableTime',
                 'fetchProductDetail',
                 'updateProduct',
+                'getWebSocketWeighScale'
             ]),
             ...mapMutations([
                 'setWeighPort',
