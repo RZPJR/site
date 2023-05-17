@@ -199,6 +199,107 @@ const state = {
             },
         ],
         data: [],
+    },
+
+    weigh_scale: {
+        url: '',
+        loading: false,
+        filter: true,
+        loadingDispose: false,
+        errorSO: false,
+        fulfill: false,
+        finished: false,
+        filePdf: '',
+        search: 0,
+        so_code: '',
+        websocket_status: '',
+        buffer: '',
+        websocket: null,
+        websocketPrint: null,
+        connected: false,
+        connectedPrint: false,
+        style: 'color: white;',
+        icon: '',
+        product: {
+            product: {
+                name: '',
+                product_image: []
+            },
+            item: {
+                item_image: {
+                    image_url: ''
+                }
+            },
+        },
+        packing: [],
+        packing_code: '',
+        callPrint: false,
+        printed: false,
+        dispose: false,
+        caution: false,
+        alert: false,
+        ticker: 0,
+        data: 0,
+        data2: 0,
+        dataStore: [],
+        belowWeight:true,
+        get_tolerance:[],
+        tolerance:0,
+        actualData: 0,
+        expectedData: 0,
+        aboveTolerance: 0,
+        belowTolerance: 0,
+        checkBrowser: true,
+        stable_weighing_time_second: 0,
+        modelWeigh: '',
+        portIp: '127.0.0.1',
+        manual: false,
+        message: '',
+        selectWeigh:[
+            {
+                text:'WEIGH1',
+                value: 'WEIGH1'
+            },
+            {
+                text:'WEIGH2',
+                value: 'WEIGH2'
+            },
+            {
+                text:'WEIGH3',
+                value: 'WEIGH3'
+            },
+            {
+                text:'WEIGH4',
+                value: 'WEIGH4'
+            },
+            {
+                text:'WEIGH5',
+                value: 'WEIGH5'
+            },
+            {
+                text:'WEIGH6',
+                value: 'WEIGH6'
+            },
+            {
+                text:'WEIGH7',
+                value: 'WEIGH7'
+            },
+            {
+                text:'WEIGH8',
+                value: 'WEIGH8'
+            }
+        ],
+        modelTime: '1000',
+        selectTime: [
+            {
+                text: '5 Seconds',
+                value: '1000'
+            },
+            {
+                text: 'Manual',
+                value: '0'
+            }
+        ]
     }
 };
 

@@ -48,6 +48,10 @@ const mutations = {
       state.pack_list.filter.select_product = payload;
       return state;
     },
+    setWeighScaleData: function(state, payload){
+      state.weigh_scale = payload;
+      return state;
+    }
     // #endregion Readlist Pack List
 };
 

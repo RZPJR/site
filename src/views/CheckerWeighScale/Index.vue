@@ -258,10 +258,12 @@
             }),
         },
         created() {
-            this.weighConnection()
+            this.getWebSocketWeighScale({
+                callback: this.onMessage,
+                'type': 'checker_weigh_scale',
+            })
             this.checkBrowserTab()
             this.checkStableTime()
-            this.getWebSocketWeighScale()
         },
         mounted() {
             let self = this
@@ -311,7 +313,7 @@
                 'fetchStableTime',
                 'fetchProductDetail',
                 'updateProduct',
-                'getWebSocketWeighScale'
+                'getWebSocketWeighScale',
             ]),
             ...mapMutations([
                 'setWeighPort',
@@ -345,19 +347,6 @@
                 } else {
                     this.$store.commit('setFilterSetting', {...this.filter, message: 'error2'})
                 }
-            },
-            //connection method to websocket for weigh scale
-            weighConnection() {
-                let val = localStorage.getItem('weigh_port')
-                let ip = localStorage.getItem('ip_port')
-                this.websocket = new WebSocket(`wss://${ip}:12212/serial/`+val)
-                this.websocket.onopen = this.onConnect
-                this.websocket.onclose = this.onDisconnect
-                this.websocket.onmessage = this.onMessage
-            },
-            //reconnect websocket if disconnected or idle for weigh scale
-            reconnect(){
-                this.weighConnection()
             },
             // to translate value from weigh scale to dom
             onMessage(evt){
@@ -411,23 +400,6 @@
                     this.filter.alert = false
                     this.filter.finished = false
                 }
-            },
-            //show status connected if onconnect for weigh scale
-            onConnect(){
-                this.$store.commit('setWebsocketSetting', {...this.websocketSetting, connected: true})
-                let weigh = localStorage.getItem('weigh_port')
-                let ip = localStorage.getItem('ip_port')
-                this.$store.commit('setPrintSetting', {...this.printSetting, ipAddress: ip, modelWeigh: weigh})
-            },
-            //show status disconnected if ondisconnect and try to reconnect to the websocket for weigh scale
-            onDisconnect(){
-                this.$store.commit('setWebsocketSetting', {...this.websocketSetting, connected: false})
-                this.$store.commit('setFilterSetting', {...this.filter, message: 'error2'})
-                this.reconnect()
-            },
-            //is websocket connected weigh scale
-            isConnected(){
-                return this.websocketSetting.connected
             },
         },
         watch: {

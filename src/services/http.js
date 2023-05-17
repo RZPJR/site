@@ -23,6 +23,9 @@ const HTTP = {
   put(url, data, use_api2) {
     return use_api2 ? api2.put(`${url}`, data) : api.put(`${url}`, data);
   },
+  delete(url, data, use_api2) {
+    return use_api2 ? api2.delete(`${url}`, data) : api.delete(`${url}`, data);
+  },
   init() {
     // Intercept the request to make sure the token is injected into the header.
     api.interceptors.request.use(config => {

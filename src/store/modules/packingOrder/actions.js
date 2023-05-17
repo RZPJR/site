@@ -1,4 +1,5 @@
 import http from "../../../services/http";
+import Vue from 'vue';
 
 const actions = {
     fetchPackingOrderList: async ({ state, commit }, payload) => {
@@ -110,6 +111,213 @@ const actions = {
             commit("setPreloadPackList", false)
         }
     },
+
+    // weigh scale
+    // fetching product
+    fetchRenderProduct: async ({ state, commit }, payload) => {
+        let {
+            packing_id,
+            product_id,
+            pack_type
+        } = payload.data
+
+        try {
+            const response = await http.get('/packing_order/pack/' + packing_id, {
+                params: {
+                    item_id: product_id,
+                    pack_type: pack_type
+                }
+            });
+            if (response.data.data) {
+                commit("setWeighScaleData", {
+                    ...state.weigh_scale,
+                    product: response.data.data,
+                    actualData: response.data.data.actual_total_pack,
+                    expectedData: response.data.data.expected_total_pack,
+                    tolerance: response.data.data.pack_type,
+                })
+                if (state.weigh_scale.actualData === state.weigh_scale.expectedData) {
+                    commit("setWeighScaleData", {
+                        ...state.weigh_scale,
+                        finished: true,
+                    })
+                }
+                const res = await http.get('/configuration/v1/app', {
+                    params: {
+                        orderby: '-id'
+                    }
+                }, true)
+                if (res.data.data) {
+                    let data = res.data.data
+                    for (let i = 0; i < data.length; i++) {
+                        let temp = data[i]
+                        if(temp.attribute === 'percentage_kg_picking_tolerance'){
+                            let temp_tolerance = temp.value
+                            let pct = (temp_tolerance / 100) * state.weigh_scale.tolerance
+                            commit("setWeighScaleData", {
+                                ...state.weigh_scale,
+                                aboveTolerance: state.weigh_scale.tolerance + pct,
+                                belowTolerance: state.weigh_scale.tolerance - pct,
+                            })
+                        }
+                    }
+                }
+            }
+        } catch {
+            console.error(error)
+        }
+    },
+    // fetch print label
+    packingLabelPrint: async ({ state, commit }, payload) => {
+        let {
+            packing_id,
+            product_id,
+            pack_type
+        } = payload
+        console.log(packing_id, product_id, pack_type, 'data masuk')
+        // commit("setWeighScaleData", {
+        //     ...state.weigh_scale,
+        //     loading: true
+        // })
+        
+        // try {
+        //     const response = await http.get('/packing_order/pack/print/' + )
+        // } catch {
+        //     console.error(error)
+        // }
+    },
+    // submit data to websocket
+    submitDataWebSocket: async ({ commit, state, dispatch, rootState }, payload) => {
+        var webSocketState = rootState.webSocketWeighScale.global_websocket
+        if (Array.isArray(payload)) {
+            payload.forEach(element => {
+                webSocketState.websocket.send(JSON.stringify(element))
+            });
+        } else {
+            webSocketState.websocket.send(JSON.stringify(payload))
+        }
+    },
+    // update Weigh Scale
+    fetchWeighScale: async ({ state, commit, dispatch, rootState }, payload) => {
+        commit("setWeighScaleData", {
+            ...state.weigh_scale,
+            loading: true
+        })
+
+        let {
+            packing_id,
+            product_id,
+            pack_type
+        } = payload
+
+        try {
+            const response = await http.put('/packing_order/pack/update/' + packing_id ,{
+                item_id: product_id,
+                pack_type: pack_type,
+                type_print: 1
+            })
+            if (response.data.data) {
+                if (state.weigh_scale.product.actual_total_pack >= state.weigh_scale.product.expected_total_pack) {
+                    commit("setWeighScaleData", {
+                        ...state.weigh_scale,
+                        fulfill: true,
+                    })
+                } else {
+                    const res = await http.put('/packing_order/pack/print/' + packing_id, {
+                        item_id: product_id,
+                        pack_type: pack_type,
+                        type_print: 1,
+                        weight_scale: parseFloat(state.weigh_scale.search)
+                    })
+                    if (res.data.data) {
+                        if (state.weigh_scale.connected == true) {
+                            dispatch('submitDataWebSocket', ({
+                                'type': 'LABEL',
+                                'url': res.data.data.link_print
+                            }))
+                        } else {
+                            alert('Automatic print is disconnected. Please try to reconnect the whb.exe or contact admin, press OK to manually print the Label');
+                            window.open(res.data.data.link_print, '_blank');
+                        }
+                        commit("setWeighScaleData", {
+                            ...state.weigh_scale,
+                            packing_code: res.data.data.code,
+                            actualData: res.data.data.actual_total_pack,
+                            expectedData: res.data.data.expected_total_pack,
+                            loading: false,
+                            alert: true,
+                            caution: true,
+                            manual: false,
+                        })
+                        if (state.weigh_scale.packing_code === '') {
+                            commit("setWeighScaleData", {
+                                ...state.weigh_scale,
+                                packing_code: ''
+                            })
+                        }
+                        if (state.weigh_scale.actualData === state.weigh_scale.expectedData) {
+                            commit("setWeighScaleData", {
+                                ...state.weigh_scale,
+                                finished: true,
+                            })
+                        }
+                    }
+                }
+            }
+        } catch {
+            commit("setWeighScaleData", {
+                ...state.weigh_scale,
+                loading: false,
+                fulfill: true
+            })
+        }
+    },
+    // dispose packing
+    fetchDisposePacking: async ({ state, commit, dispatch }, payload) => {
+        commit("setWeighScaleData", {
+            ...state.weigh_scale,
+            loadingDispose: true
+        })
+
+        let {
+            packing_id,
+            product_id,
+            pack_type
+        } = payload
+
+        try {
+            const response = await http.delete('/packing_order/pack/dispose/' + packing_id ,{
+                data: {
+                    item_id: product_id,
+                    pack_type: pack_type
+                }
+            })
+            if (response.data.data) {
+                commit("setWeighScaleData", {
+                    ...state.weigh_scale,
+                    packing_code: response.data.data.code_print,
+                    alert: false,
+                    actualData: response.data.data.actual_total_pack,
+                    expectedData: response.data.data.expected_total_pack,
+                    loadingDispose: false,
+                    dispose: false
+                })
+                Vue.$toast.open({
+                    position: 'top-right',
+                    message: 'Success to dispose ' + state.weigh_scale.packing_code,
+                    type: 'success',
+                });
+                if (state.weigh_scale.actualData !== state.weigh_scale.expectedData) {
+                    commit("setWeighScaleData", {
+                        ...state.weigh_scale,
+                        finished: false,
+                    })
+                }
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
 }
 
 export default actions;

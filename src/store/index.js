@@ -4,7 +4,8 @@ import Vuex from "vuex";
 import packingOrder from "./modules/packingOrder";
 import checkerWeighScale from "./modules/checkerWeighScale";
 import printLabel from "./modules/printLabel";
-import webSocket from "./modules/webSocketLabel";
+import webSocketLabel from "./modules/webSocketLabel";
+import webSocketWeighScale from "./modules/webSocketWeighScale"
 
 Vue.use(Vuex);
 
@@ -13,6 +14,7 @@ export default new Vuex.Store({
     packingOrder,
     checkerWeighScale,
     printLabel,
-    webSocket,
+    webSocketLabel,
+    webSocketWeighScale
   }
 });

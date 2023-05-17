@@ -10,16 +10,6 @@ const api = axios.create({
 });
 
 const actions = {
-    submitDataWebSocket: async ({ commit, state, dispatch, rootState }, payload) => {
-        var webSocketState = rootState.webSocket.global_websocket
-        if (Array.isArray(payload)) {
-            payload.forEach(element => {
-                webSocketState.websocket.send(JSON.stringify(element))
-            });
-        } else {
-            webSocketState.websocket.send(JSON.stringify(payload))
-        }
-    },
     printLabel: async ({ commit, state, dispatch, rootState }, payload) => {
         var valueFilterType = localStorage.getItem('filter_type');
         var webSocketState = rootState.webSocket.global_websocket
