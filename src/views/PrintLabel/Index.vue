@@ -36,6 +36,7 @@
                                     class="-mt10"
                                     v-on="{ ...tooltip }"
                                     outlined
+                                    data-unq="printLabel-input-soCode"
                                 >
                                     <template v-slot:label>
                                         <div v-if="print_label.filter_type.value == 'label_picking' || print_label.filter_type == 'label_picking'">
@@ -65,6 +66,7 @@
                         label="Print Type"
                         :items="print_label.item_filter"
                         @change="selectedFilterType(print_label.filter_type)"
+                        data-unq="printLabel-filter-selectLabelType"
                     ></v-select>
                 </v-card-text>
             </v-col>

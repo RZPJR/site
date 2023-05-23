@@ -171,6 +171,7 @@
                                     class="-mt10"
                                     v-on="{ ...tooltip }"
                                     outlined
+                                    data-unq="weighscale-input-productCode"
                                 >
                                 </v-text-field>
                             </template>
