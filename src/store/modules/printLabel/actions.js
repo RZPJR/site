@@ -14,7 +14,7 @@ const actions = {
     },
     // reconnecting to websocket if disconnected
     reconnectWebSocket: async ({ commit, state, dispatch }, payload) => {
-        dispatch('getWebSocket');
+        dispatch('getWebSocketPrintLabel');
     },
     // printLabel Method
     printLabel: async ({ commit, state, dispatch, rootState }, payload) => {
