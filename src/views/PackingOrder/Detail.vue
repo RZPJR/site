@@ -384,9 +384,7 @@
                                        {{item.actual_total_pack}}/{{item.expected_total_pack}}
                                        <v-icon
                                         dark
-                                        right
-                                        >
-                                            mdi-weight
+                                        right>mdi-weight
                                         </v-icon>
                                     </span>
                                 </v-btn>
