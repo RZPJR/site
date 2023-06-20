@@ -21,64 +21,32 @@ const actions = {
         var valueFilterType = localStorage.getItem('filter_type');
         commit('setLoadingLabel', true)
         let { val } = payload
-        let code = ''
-        let typePrint = ''
-        if (val.startsWith('PL-') && valueFilterType == 'label_picking') {
-            code = 'pickinglist.code:' + val
-            typePrint = 'picking_list'
-        } else {
-            code = val
-            typePrint = valueFilterType
-        }
         try {
-            const response = await http.get('/print_label', {
-                params: {
-                    condition: code,
-                    type_print: typePrint
-                }
-            });
-            if(response.data){
-                let data = response.data.data
-                if (valueFilterType == 'sj') {
+            if (valueFilterType == 'label_picking') {
+                const response = await http.get('/print_label', {
+                    params: {
+                        condition: 'pickinglist.code:' + val,
+                        type_print: 'picking_list'
+                    }
+                });
+                if(response.data){
+                    let data = response.data.data
                     if (state.print_label.websocket_setting.connected == true) {
                         dispatch('submitDataWebSocketPrintLabel', ({
-                            'type': 'INVOICE',
-                            'qty' : 3,
-                            'url': response.data.file
+                            'type': 'LABEL',
+                            'url': data.data
                         }))
                     } else {
-                        alert('Automatic print is disconnected. Please try to reconnect the whb.exe or contact admin, press OK to manually print the Surat Jalan');
-                        window.open(response.data.file, '_blank');
+                        alert('Automatic print is disconnected. Please try to reconnect the whb.exe or contact admin, press OK to manually print the Label');
+                        window.open(data.data, '_blank');
                     }
                     commit('setSearch', '')
                     commit('setLoadingLabel', false)
-                } else {
-                    if (val.startsWith('PL-')) {
-                        if (state.print_label.websocket_setting.connected == true) {
-                            dispatch('submitDataWebSocketPrintLabel', ({
-                                'type': 'LABEL',
-                                'url': response.data.file
-                            }))
-                        } else {
-                            alert('Automatic print is disconnected. Please try to reconnect the whb.exe or contact admin, press OK to manually print the Label');
-                            window.open(response.data.file, '_blank');
-                        }
-                        commit('setSearch', '')
-                        commit('setLoadingLabel', false)
-                    } else {
-                        if (state.print_label.websocket_setting.connected == true) {
-                            dispatch('submitDataWebSocketPrintLabel', ({
-                                'type': 'LABEL',
-                                'url': data.data
-                            }))
-                        } else {
-                            alert('Automatic print is disconnected. Please try to reconnect the whb.exe or contact admin, press OK to manually print the Label');
-                            window.open(data.data, '_blank');
-                        }
-                        commit('setSearch', '')
-                        commit('setLoadingLabel', false)
-                    }
                 }
+            } else if (valueFilterType == 'sj') {
+                console.log('ini masuk ke sini yah (SJ)')
+                commit('setSearch', '')
+                commit('setLoadingLabel', false)
             }
         } catch (error) {
             commit('setLoadingLabel', false)
