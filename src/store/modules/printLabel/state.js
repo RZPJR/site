@@ -27,6 +27,10 @@ const state = {
                 text: 'Label',
                 value: 'label_picking'
             },
+            {
+                text: 'Surat Jalan',
+                value: 'sj'
+            },
         ],
         filter_type:  {
             text: 'Label',
