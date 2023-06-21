@@ -25,7 +25,7 @@ const actions = {
             if (valueFilterType == 'label_picking') {
                 const response = await http.get('/print_label', {
                     params: {
-                        condition: 'pickinglist.code:' + val,
+                        condition: val,
                         type_print: 'picking_list'
                     }
                 });
@@ -44,9 +44,27 @@ const actions = {
                     commit('setLoadingLabel', false)
                 }
             } else if (valueFilterType == 'sj') {
-                console.log('ini masuk ke sini yah (SJ)')
-                commit('setSearch', '')
-                commit('setLoadingLabel', false)
+                const response = await http.get('/print_label/delivery', {
+                    params: {
+                        condition: val,
+                        type_print: 'sj'
+                    }
+                });
+                if(response.data){
+                    let data = response.data.data
+                    if (state.print_label.websocket_setting.connected == true) {
+                        dispatch('submitDataWebSocketPrintLabel', ({
+                            'type': 'INVOICE',
+                            'qty' : 3,
+                            'url': data.data
+                        }))
+                    } else {
+                        alert('Automatic print is disconnected. Please try to reconnect the whb.exe or contact admin, press OK to manually print the Label');
+                        window.open(data.data, '_blank');
+                    }
+                    commit('setSearch', '')
+                    commit('setLoadingLabel', false)
+                }
             }
         } catch (error) {
             commit('setLoadingLabel', false)
