@@ -13,4 +13,9 @@ stages:
   - reconfig
 
 before_script:
-  - cp $ENV .env
+  - >
+    if [ "$CI_COMMIT_BRANCH" == "uat" ]; then 
+      cp $ENV_UAT .env
+    else
+      cp $ENV .env
+    fi
