@@ -5,12 +5,14 @@ include:
       - 'build-image.yml'
       - 'deploy-image.yml'
       - 'importmap-shared-deps.yml'
+      - 'purge.yml'
 
 stages:
   - test
   - build
   - deploy
   - reconfig
+  - purge
 
 before_script:
   - >
