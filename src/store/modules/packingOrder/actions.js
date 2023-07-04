@@ -51,7 +51,7 @@ const actions = {
             const response = await http.get("/packing_order/"+payload.id)
             if(response.data.data) {
                 commit("setPackingOrderDetail", response.data.data);
-                // METHOD FOR GROUPING ITEM PACK
+                // METHOD FOR GROUPING ITEM PACK 
                 let data = response.data.data.packing_recommendation
                 let groupedData = data.reduce((result, current) => {
                     const item = current.item;
