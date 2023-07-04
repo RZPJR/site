@@ -106,7 +106,7 @@
                     <tr style="height:48px">
                         <td>{{ props.item.item.description }}</td>
                         <td>{{ props.item.item.uom.name }}</td>
-                        <td>{{ formatPrice(props.item.total_progress_pct) + '%'}}</td>
+                        <td>{{ formatPercentage(props.item.total_progress_pct)}}</td>
                         <td>
                             <div v-for="(item, idx) in props.item.item_pack" :key="idx">
                                 <div v-if="item.pack_type == 0.25">
