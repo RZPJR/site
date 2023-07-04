@@ -101,13 +101,12 @@
                 :items="data.packing_recommendation"
                 :hide-default-footer="true"
                 :items-per-page="-1"
-                class="mx-6 mt-6"
             >
                 <template v-slot:item="props">
                     <tr style="height:48px">
                         <td>{{ props.item.item.description }}</td>
                         <td>{{ props.item.item.uom.name }}</td>
-                        <td>{{ props.item.total_progress_pct }}%</td>
+                        <td>{{ formatPrice(props.item.total_progress_pct) + '%'}}</td>
                         <td>
                             <div v-for="(item, idx) in props.item.item_pack" :key="idx">
                                 <div v-if="item.pack_type == 0.25">
@@ -349,7 +348,7 @@ export default {
                 packing_id: this.packing_order_detail.data.id
             };
             localStorage.setItem("valueWeight", JSON.stringify(data))
-            window.location.replace("/site/weigh-scale");
+            this.$router.push("/site/weigh-scale");
         },
     }
 }

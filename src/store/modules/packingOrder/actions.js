@@ -77,7 +77,7 @@ const actions = {
                         totalExpected += pack.expected_total_pack;
                         totalActual += pack.actual_total_pack;
                     });
-                    item.total_progress_pct = totalActual !== 0 ? (totalExpected / totalActual) * 100 : 0;
+                    item.total_progress_pct = totalActual !== 0 ? (totalActual / totalExpected) * 100 : 0;
                 });
                 commit("setItemPacking", groupedArray);
             }
