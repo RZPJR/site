@@ -23,6 +23,10 @@ const mutations = {
       state.packing_order_detail.data = payload;
       return state;
     },
+    setItemPacking: function(state, payload) {
+        state.packing_order_detail.data.packing_recommendation = payload;
+        return state;
+    },
     // #endregion Detail Packing Order
 
     // Packing Order Create 
