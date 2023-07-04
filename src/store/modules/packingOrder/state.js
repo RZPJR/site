@@ -120,7 +120,21 @@ const state = {
                 sortable: false,
             },
         ],
-        data : [],
+        data : {
+            region: {
+                name: ''
+            },
+            site: {
+                name: ''
+            },
+            packing_recommendation: [{
+                item: {
+                    uom: {
+                        name: ''
+                    }
+                }
+            }]
+        },
         weigh_scale: {}
     },
 

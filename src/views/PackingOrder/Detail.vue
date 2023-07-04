@@ -101,319 +101,177 @@
                 :items="data.packing_recommendation"
                 :hide-default-footer="true"
                 :items-per-page="-1"
+                class="mx-6 mt-6"
             >
-            <template v-slot:item="props">
-                <tr style="height:48px">
-                    <td>{{ props.item.item.description }}</td>
-                    <td>{{ props.item.item.uom.name }}</td>
-                    <td>{{ props.item.total_progress_pct }}%</td>
-                    <td>
-                        <div v-for="(item, idx) in props.item.item_pack" :key="idx">
-                            <div v-if="item.pack_type == 0.25">
-                                <v-btn
-                                    depressed
-                                    color="#50ABA3"
-                                    data-unq="packingorder.button.0.25"
-                                    :disabled="item.actual_total_pack === item.expected_total_pack ? !disabledBtn : disabledBtn"
-                                    @click="weighScale(props.item.item.id,item.pack_type)"
-                                    class="no-caps bold"
-                                >
-                                    <span class="text-white">
-                                       {{item.actual_total_pack}}/{{item.expected_total_pack}}
-                                       <v-icon
-                                        dark
-                                        right
-                                        >
-                                            mdi-weight
-                                        </v-icon>
-                                    </span>
-                                </v-btn>
+                <template v-slot:item="props">
+                    <tr style="height:48px">
+                        <td>{{ props.item.item.description }}</td>
+                        <td>{{ props.item.item.uom.name }}</td>
+                        <td>{{ props.item.total_progress_pct }}%</td>
+                        <td>
+                            <div v-for="(item, idx) in props.item.item_pack" :key="idx">
+                                <div v-if="item.pack_type == 0.25">
+                                    <v-btn
+                                        depressed
+                                        color="#50ABA3"
+                                        :disabled="item.actual_total_pack === item.expected_total_pack ? !disabledBtn : disabledBtn"
+                                        @click="weighScale(props.item.item.id,item.pack_type)"
+                                        class="no-caps bold"
+                                    >
+                                        <span class="text-white">
+                                            {{ item.actual_total_pack }}/{{ item.expected_total_pack }}
+                                            <v-icon
+                                                dark
+                                                right
+                                            >
+                                                mdi-weight
+                                            </v-icon>
+                                        </span>
+                                    </v-btn>
+                                </div>
                             </div>
-                            <div v-else="item.pack_type == 0.25">
-                                <v-btn
-                                    depressed
-                                    color="#50ABA3"
-                                    data-unq="packingorder.button.0.25"
-                                    :disabled="true"
-                                    class="no-caps bold"
-                                >
-                                    <span class="text-white">
-                                       {{item.actual_total_pack}}/{{item.expected_total_pack}}
-                                       <v-icon
-                                        dark
-                                        right
-                                        >
-                                            mdi-weight
-                                        </v-icon>
-                                    </span>
-                                </v-btn>
+                        </td>
+                        <td>
+                            <div v-for="(item, idx) in props.item.item_pack" :key="idx">
+                                <div v-if="item.pack_type == 0.5">
+                                    <v-btn
+                                        depressed
+                                        color="#50ABA3"
+                                        :disabled="item.actual_total_pack === item.expected_total_pack ? !disabledBtn : disabledBtn"
+                                        @click="weighScale(props.item.item.id,item.pack_type)"
+                                        class="no-caps bold"
+                                    >
+                                        <span class="text-white">
+                                        {{item.actual_total_pack}}/{{item.expected_total_pack}}
+                                        <v-icon
+                                            dark
+                                            right
+                                            >
+                                                mdi-weight
+                                            </v-icon>
+                                        </span>
+                                    </v-btn>
+                                </div>
                             </div>
-                        </div>
-                    </td>
-                    <td>
-                        <div v-for="(item, idx) in props.item.item_pack" :key="idx">
-                            <div v-if="item.pack_type == 0.5">
-                                <v-btn
-                                    depressed
-                                    color="#50ABA3"
-                                    data-unq="packingorder.button.0.5"
-                                    :disabled="item.actual_total_pack === item.expected_total_pack ? !disabledBtn : disabledBtn"
-                                    @click="weighScale(props.item.item.id,item.pack_type)"
-                                    class="no-caps bold"
-                                >
-                                    <span class="text-white">
-                                       {{item.actual_total_pack}}/{{item.expected_total_pack}}
-                                       <v-icon
-                                        dark
-                                        right
-                                        >
-                                            mdi-weight
-                                        </v-icon>
-                                    </span>
-                                </v-btn>
+                        </td>
+                        <td>
+                            <div v-for="(item, idx) in props.item.item_pack" :key="idx">
+                                <div v-if="item.pack_type == 1">
+                                    <v-btn
+                                        depressed
+                                        color="#50ABA3"
+                                        :disabled="item.actual_total_pack === item.expected_total_pack ? !disabledBtn : disabledBtn"
+                                        @click="weighScale(props.item.item.id,item.pack_type)"
+                                        class="no-caps bold"
+                                    >
+                                        <span class="text-white">
+                                        {{item.actual_total_pack}}/{{item.expected_total_pack}}
+                                        <v-icon
+                                            dark
+                                            right
+                                            >
+                                                mdi-weight
+                                            </v-icon>
+                                        </span>
+                                    </v-btn>
+                                </div>
                             </div>
-                            <div v-else="item.pack_type == 0.5">
-                                <v-btn
-                                    depressed
-                                    color="#50ABA3"
-                                    data-unq="packingorder.button.0.5"
-                                    :disabled="true"
-                                    class="no-caps bold"
-                                >
-                                    <span class="text-white">
-                                       {{item.actual_total_pack}}/{{item.expected_total_pack}}
-                                       <v-icon
-                                        dark
-                                        right
-                                        >
-                                            mdi-weight
-                                        </v-icon>
-                                    </span>
-                                </v-btn>
+                        </td>
+                        <td>
+                            <div v-for="(item, idx) in props.item.item_pack" :key="idx">
+                                <div v-if="item.pack_type == 2">
+                                    <v-btn
+                                        depressed
+                                        color="#50ABA3"
+                                        :disabled="item.actual_total_pack === item.expected_total_pack ? !disabledBtn : disabledBtn"
+                                        @click="weighScale(props.item.item.id,item.pack_type)"
+                                        class="no-caps bold"
+                                    >
+                                        <span class="text-white">
+                                        {{item.actual_total_pack}}/{{item.expected_total_pack}}
+                                        <v-icon
+                                            dark
+                                            right
+                                            >
+                                                mdi-weight
+                                            </v-icon>
+                                        </span>
+                                    </v-btn>
+                                </div>
                             </div>
-                        </div>
-                    </td>
-                    <td>
-                        <div v-for="(item, idx) in props.item.item_pack" :key="idx">
-                            <div v-if="item.pack_type == 1">
-                                <v-btn
-                                    depressed
-                                    color="#50ABA3"
-                                    data-unq="packingorder.button.1"
-                                    :disabled="item.actual_total_pack === item.expected_total_pack ? !disabledBtn : disabledBtn"
-                                    @click="weighScale(props.item.item.id,item.pack_type)"
-                                    class="no-caps bold"
-                                >
-                                    <span class="text-white">
-                                       {{item.actual_total_pack}}/{{item.expected_total_pack}}
-                                       <v-icon
-                                        dark
-                                        right
-                                        >
-                                            mdi-weight
-                                        </v-icon>
-                                    </span>
-                                </v-btn>
+                        </td>
+                        <td>
+                            <div v-for="(item, idx) in props.item.item_pack" :key="idx">
+                                <div v-if="item.pack_type == 5">
+                                    <v-btn
+                                        depressed
+                                        color="#50ABA3"
+                                        :disabled="item.actual_total_pack === item.expected_total_pack ? !disabledBtn : disabledBtn"
+                                        @click="weighScale(props.item.item.id,item.pack_type)"
+                                        class="no-caps bold"
+                                    >
+                                        <span class="text-white">
+                                        {{item.actual_total_pack}}/{{item.expected_total_pack}}
+                                        <v-icon
+                                            dark
+                                            right
+                                            >
+                                                mdi-weight
+                                            </v-icon>
+                                        </span>
+                                    </v-btn>
+                                </div>
                             </div>
-                            <div v-else="item.pack_type == 1">
-                                <v-btn
-                                    depressed
-                                    color="#50ABA3"
-                                    data-unq="packingorder.button.1"
-                                    :disabled="true"
-                                    @click="weighScale(props.item.item.id,item.pack_type)"
-                                    class="no-caps bold"
-                                >
-                                    <span class="text-white">
-                                       {{item.actual_total_pack}}/{{item.expected_total_pack}}
-                                       <v-icon
-                                        dark
-                                        right
-                                        >
-                                            mdi-weight
-                                        </v-icon>
-                                    </span>
-                                </v-btn>
+                        </td>
+                        <td>
+                            <div v-for="(item, idx) in props.item.item_pack" :key="idx">
+                                <div v-if="item.pack_type == 10">
+                                    <v-btn
+                                        depressed
+                                        color="#50ABA3"
+                                        :disabled="item.actual_total_pack === item.expected_total_pack ? !disabledBtn : disabledBtn"
+                                        @click="weighScale(props.item.item.id,item.pack_type)"
+                                        class="no-caps bold"
+                                    >
+                                        <span class="text-white">
+                                        {{item.actual_total_pack}}/{{item.expected_total_pack}}
+                                        <v-icon
+                                            dark
+                                            right
+                                            >
+                                                mdi-weight
+                                            </v-icon>
+                                        </span>
+                                    </v-btn>
+                                </div>
                             </div>
-                        </div>
-                    </td>
-                    <td>
-                        <div v-for="(item, idx) in props.item.item_pack" :key="idx">
-                            <div v-if="item.pack_type == 2">
-                                <v-btn
-                                    depressed
-                                    color="#50ABA3"
-                                    data-unq="packingorder.button.2"
-                                    :disabled="item.actual_total_pack === item.expected_total_pack ? !disabledBtn : disabledBtn"
-                                    @click="weighScale(props.item.item.id,item.pack_type)"
-                                    class="no-caps bold"
-                                >
-                                    <span class="text-white">
-                                       {{item.actual_total_pack}}/{{item.expected_total_pack}}
-                                       <v-icon
-                                        dark
-                                        right
-                                        >
-                                            mdi-weight
-                                        </v-icon>
-                                    </span>
-                                </v-btn>
+                        </td>
+                        <td>
+                            <div v-for="(item, idx) in props.item.item_pack" :key="idx">
+                                <div v-if="item.pack_type == 20">
+                                    <v-btn
+                                        depressed
+                                        color="#50ABA3"
+                                        :disabled="item.actual_total_pack === item.expected_total_pack ? !disabledBtn : disabledBtn"
+                                        @click="weighScale(props.item.item.id,item.pack_type)"
+                                        class="no-caps bold"
+                                    >
+                                        <span class="text-white">
+                                        {{item.actual_total_pack}}/{{item.expected_total_pack}}
+                                        <v-icon
+                                            dark
+                                            right
+                                            >
+                                                mdi-weight
+                                            </v-icon>
+                                        </span>
+                                    </v-btn>
+                                </div>
                             </div>
-                            <div v-else>
-                                <v-btn
-                                    depressed
-                                    color="#50ABA3"
-                                    data-unq="packingorder.button.2"
-                                    :disabled="true"
-                                    @click="weighScale(props.item.item.id,item.pack_type)"
-                                    class="no-caps bold"
-                                >
-                                    <span class="text-white">
-                                       {{item.actual_total_pack}}/{{item.expected_total_pack}}
-                                       <v-icon
-                                        dark
-                                        right
-                                        >
-                                            mdi-weight
-                                        </v-icon>
-                                    </span>
-                                </v-btn>
-                            </div>
-                        </div>
-                    </td>
-                    <td>
-                        <div v-for="(item, idx) in props.item.item_pack" :key="idx">
-                            <div v-if="item.pack_type == 5">
-                                <v-btn
-                                    depressed
-                                    color="#50ABA3"
-                                    data-unq="packingorder.button.5"
-                                    :disabled="item.actual_total_pack === item.expected_total_pack ? !disabledBtn : disabledBtn"
-                                    @click="weighScale(props.item.item.id,item.pack_type)"
-                                    class="no-caps bold"
-                                >
-                                    <span class="text-white">
-                                       {{item.actual_total_pack}}/{{item.expected_total_pack}}
-                                       <v-icon
-                                        dark
-                                        right
-                                        >
-                                            mdi-weight
-                                        </v-icon>
-                                    </span>
-                                </v-btn>
-                            </div>
-                            <div v-else>
-                                <v-btn
-                                    depressed
-                                    color="#50ABA3"
-                                    data-unq="packingorder.button.5"
-                                    :disabled="true"
-                                    @click="weighScale(props.item.item.id,item.pack_type)"
-                                    class="no-caps bold"
-                                >
-                                    <span class="text-white">
-                                       {{item.actual_total_pack}}/{{item.expected_total_pack}}
-                                       <v-icon
-                                        dark
-                                        right
-                                        >
-                                            mdi-weight
-                                        </v-icon>
-                                    </span>
-                                </v-btn>
-                            </div>
-                        </div>
-                    </td>
-                    <td>
-                        <div v-for="(item, idx) in props.item.item_pack" :key="idx">
-                            <div v-if="item.pack_type == 10">
-                                <v-btn
-                                    depressed
-                                    color="#50ABA3"
-                                    data-unq="packingorder.button.10"
-                                    :disabled="item.actual_total_pack === item.expected_total_pack ? !disabledBtn : disabledBtn"
-                                    @click="weighScale(props.item.item.id,item.pack_type)"
-                                    class="no-caps bold"
-                                >
-                                    <span class="text-white">
-                                       {{item.actual_total_pack}}/{{item.expected_total_pack}}
-                                       <v-icon
-                                        dark
-                                        right
-                                        >
-                                            mdi-weight
-                                        </v-icon>
-                                    </span>
-                                </v-btn>
-                            </div>
-                            <div v-else>
-                                <v-btn
-                                    depressed
-                                    color="#50ABA3"
-                                    data-unq="packingorder.button.10"
-                                    :disabled="TextTrackCueList"
-                                    @click="weighScale(props.item.item.id,item.pack_type)"
-                                    class="no-caps bold"
-                                >
-                                    <span class="text-white">
-                                       {{item.actual_total_pack}}/{{item.expected_total_pack}}
-                                       <v-icon
-                                        dark
-                                        right
-                                        >
-                                            mdi-weight
-                                        </v-icon>
-                                    </span>
-                                </v-btn>
-                            </div>
-                        </div>
-                    </td>
-                    <td>
-                        <div v-for="(item, idx) in props.item.item_pack" :key="idx">
-                            <div v-if="item.pack_type == 20">
-                                <v-btn
-                                    depressed
-                                    color="#50ABA3"
-                                    data-unq="packingorder.button.20"
-                                    :disabled="item.actual_total_pack === item.expected_total_pack ? !disabledBtn : disabledBtn"
-                                    @click="weighScale(props.item.item.id,item.pack_type)"
-                                    class="no-caps bold"
-                                >
-                                    <span class="text-white">
-                                       {{item.actual_total_pack}}/{{item.expected_total_pack}}
-                                       <v-icon
-                                        dark
-                                        right>mdi-weight
-                                        </v-icon>
-                                    </span>
-                                </v-btn>
-                            </div>
-                            <div v-else>
-                                <v-btn
-                                    depressed
-                                    color="#50ABA3"
-                                    data-unq="packingorder.button.20"
-                                    :disabled="true"
-                                    @click="weighScale(props.item.item.id,item.pack_type)"
-                                    class="no-caps bold"
-                                >
-                                    <span class="text-white">
-                                       {{item.actual_total_pack}}/{{item.expected_total_pack}}
-                                       <v-icon
-                                        dark
-                                        right
-                                        >
-                                            mdi-weight
-                                        </v-icon>
-                                    </span>
-                                </v-btn>
-                            </div>
-                        </div>
-                    </td>
-                </tr>
-            </template>
-        </v-data-table>
+                        </td>
+                    </tr>
+                </template>
+            </v-data-table>
         </div>
         <AuditLogNew :data="dataAuditLog"/>
         <LoadingBar :value="overlay"/>

@@ -50,7 +50,36 @@ const actions = {
         try {
             const response = await http.get("/packing_order/"+payload.id)
             if(response.data.data) {
-                commit("setPackingOrderDetail", response.data.data)
+                commit("setPackingOrderDetail", response.data.data);
+                // METHOD FOR GROUPING ITEM PACK
+                let data = response.data.data.packing_recommendation
+                let groupedData = data.reduce((result, current) => {
+                    const item = current.item;
+                    const itemId = current.item_id;
+                    const itemPack = current.item_pack;
+                    if (result[itemId]) {
+                        result[itemId].item_pack.push(...itemPack);
+                    } else {
+                        result[itemId] = {
+                            item_id: itemId,
+                            item: item,
+                            item_pack: [...itemPack]
+                        };
+                    }
+                    return result;
+                }, {});
+                let groupedArray = Object.values(groupedData);
+                // CALCULATE FOR PERCENTAGE
+                groupedArray.forEach((item) => {
+                    let totalExpected = 0;
+                    let totalActual = 0;
+                    item.item_pack.forEach((pack) => {
+                        totalExpected += pack.expected_total_pack;
+                        totalActual += pack.actual_total_pack;
+                    });
+                    item.total_progress_pct = totalActual !== 0 ? (totalExpected / totalActual) * 100 : 0;
+                });
+                commit("setItemPacking", groupedArray);
             }
         } catch (error) {
             console.error(error)
