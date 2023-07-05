@@ -99,6 +99,7 @@
             <v-data-table
                 :headers="table_header"
                 :items="data.packing_recommendation"
+                :loading="isLoading"
                 :hide-default-footer="true"
                 :items-per-page="-1"
             >
@@ -106,7 +107,7 @@
                     <tr style="height:48px">
                         <td>{{ props.item.item.description }}</td>
                         <td>{{ props.item.item.uom.name }}</td>
-                        <td>{{ formatPercentage(props.item.total_progress_pct)}}</td>
+                        <td>{{ props.item.total_progress_pct == undefined ? '' : formatPercentage(props.item.total_progress_pct) }}</td>
                         <td>
                             <div v-for="(item, idx) in props.item.item_pack" :key="idx">
                                 <div v-if="item.pack_type == 0.25">
@@ -141,10 +142,10 @@
                                         class="no-caps bold"
                                     >
                                         <span class="text-white">
-                                        {{item.actual_total_pack}}/{{item.expected_total_pack}}
-                                        <v-icon
-                                            dark
-                                            right
+                                            {{item.actual_total_pack}}/{{item.expected_total_pack}}
+                                            <v-icon
+                                                dark
+                                                right
                                             >
                                                 mdi-weight
                                             </v-icon>
@@ -164,10 +165,10 @@
                                         class="no-caps bold"
                                     >
                                         <span class="text-white">
-                                        {{item.actual_total_pack}}/{{item.expected_total_pack}}
-                                        <v-icon
-                                            dark
-                                            right
+                                            {{item.actual_total_pack}}/{{item.expected_total_pack}}
+                                            <v-icon
+                                                dark
+                                                right
                                             >
                                                 mdi-weight
                                             </v-icon>
@@ -187,10 +188,10 @@
                                         class="no-caps bold"
                                     >
                                         <span class="text-white">
-                                        {{item.actual_total_pack}}/{{item.expected_total_pack}}
-                                        <v-icon
-                                            dark
-                                            right
+                                            {{item.actual_total_pack}}/{{item.expected_total_pack}}
+                                            <v-icon
+                                                dark
+                                                right
                                             >
                                                 mdi-weight
                                             </v-icon>
@@ -210,10 +211,10 @@
                                         class="no-caps bold"
                                     >
                                         <span class="text-white">
-                                        {{item.actual_total_pack}}/{{item.expected_total_pack}}
-                                        <v-icon
-                                            dark
-                                            right
+                                            {{item.actual_total_pack}}/{{item.expected_total_pack}}
+                                            <v-icon
+                                                dark
+                                                right
                                             >
                                                 mdi-weight
                                             </v-icon>
@@ -233,10 +234,10 @@
                                         class="no-caps bold"
                                     >
                                         <span class="text-white">
-                                        {{item.actual_total_pack}}/{{item.expected_total_pack}}
-                                        <v-icon
-                                            dark
-                                            right
+                                            {{item.actual_total_pack}}/{{item.expected_total_pack}}
+                                            <v-icon
+                                                dark
+                                                right
                                             >
                                                 mdi-weight
                                             </v-icon>
@@ -256,10 +257,10 @@
                                         class="no-caps bold"
                                     >
                                         <span class="text-white">
-                                        {{item.actual_total_pack}}/{{item.expected_total_pack}}
-                                        <v-icon
-                                            dark
-                                            right
+                                            {{item.actual_total_pack}}/{{item.expected_total_pack}}
+                                            <v-icon
+                                                dark
+                                                right
                                             >
                                                 mdi-weight
                                             </v-icon>
@@ -314,6 +315,7 @@ export default {
             packing_order_detail: state => state.packingOrder.packing_order_detail,
             table_header: state => state.packingOrder.packing_order_detail.table_headers,
             data: state => state.packingOrder.packing_order_detail.data,
+            isLoading: state => state.packingOrder.packing_order_detail.isLoading,
         }),
     },
     methods : {

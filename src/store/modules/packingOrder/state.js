@@ -68,6 +68,7 @@ const state = {
     },
 
     packing_order_detail:{
+        isLoading: false,
         table_headers: [
             {
                 text:'Product',
