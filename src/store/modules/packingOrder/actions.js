@@ -47,6 +47,7 @@ const actions = {
 
     // Detail Packing Order
     fetchPackingOrderDetail: async ({ commit, dispatch}, payload) => {
+        commit("setPreloadPackingOrderDetail", true)
         try {
             const response = await http.get("/packing_order/"+payload.id)
             if(response.data.data) {
@@ -80,9 +81,11 @@ const actions = {
                     item.total_progress_pct = totalActual !== 0 ? (totalActual / totalExpected) * 100 : 0;
                 });
                 commit("setItemPacking", groupedArray);
+                commit("setPreloadPackingOrderDetail", false)
             }
         } catch (error) {
             console.error(error)
+            commit("setPreloadPackingOrderDetail", false)
         }
     },
 
