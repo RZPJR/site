@@ -26,7 +26,7 @@ const actions = {
                 const response = await http.get('/print_label', {
                     params: {
                         condition: val,
-                        type_print: 'picking_list'
+                        type_print: 'label_picking'
                     }
                 });
                 if(response.data){

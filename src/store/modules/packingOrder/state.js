@@ -68,6 +68,7 @@ const state = {
     },
 
     packing_order_detail:{
+        isLoading: false,
         table_headers: [
             {
                 text:'Product',
@@ -120,7 +121,21 @@ const state = {
                 sortable: false,
             },
         ],
-        data : [],
+        data : {
+            region: {
+                name: ''
+            },
+            site: {
+                name: ''
+            },
+            packing_recommendation: [{
+                item: {
+                    uom: {
+                        name: ''
+                    }
+                }
+            }]
+        },
         weigh_scale: {}
     },
 
