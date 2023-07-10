@@ -336,10 +336,10 @@ export default {
         //download packing recommendation excel 
         downloadPacking() {
             this.overlay = true
-            this.$http.get("/warehouse/packing_order/export/"+this.$route.params.id)
+            this.$http.get("/site/v1/packing_order/export/"+this.$route.params.id)
             .then(response => {
                 this.overlay = false
-                window.location.href = response.data.file
+                window.location.href = response.data.data.url
             })
         },
         //to store data and route to the weigh scale
