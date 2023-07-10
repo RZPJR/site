@@ -3,7 +3,7 @@ import http from "../../../services/http";
 const actions = {
     // getting websocket Configuration
     getWebSocketPrintLabel: async ({ commit, state, dispatch }, payload) => {
-        state.print_label.websocket_setting.websocket = new WebSocket("ws://127.0.0.1:12212/printer")
+        state.print_label.websocket_setting.websocket = new WebSocket("wss://127.0.0.1:12212/printer")
         state.print_label.websocket_setting.websocket.onopen = () => {
             commit('setWebSocketSetting', {...state.print_label.websocket_setting, connected: true, websocket_status: 'Connected'})
         }

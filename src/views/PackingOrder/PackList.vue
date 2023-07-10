@@ -316,7 +316,7 @@
             },
             //connection method to websocket for print
             printConnection(){
-                this.websocket_print = new WebSocket("ws://127.0.0.1:12212/printer")
+                this.websocket_print = new WebSocket("wss://127.0.0.1:12212/printer")
                 this.websocket_print.onopen = this.onConnectPrint
                 this.websocket_print.onclose = this.onDisconnectPrint
             },

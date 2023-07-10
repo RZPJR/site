@@ -336,7 +336,7 @@ export default {
         //download packing recommendation excel 
         downloadPacking() {
             this.overlay = true
-            this.$http.get("/warehouse/packing_order/recommendation/export/"+this.$route.params.id)
+            this.$http.get("/warehouse/packing_order/export/"+this.$route.params.id)
             .then(response => {
                 this.overlay = false
                 window.location.href = response.data.file
