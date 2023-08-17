@@ -41,7 +41,7 @@ spec:
       - name: registry
       containers:
       - name: fe-site
-        image: git.edenfarm.id:5050/project-version3/erp-dashboard/site/eks-dev:<VERSION>
+        image: git.edenfarm.id:5050/project-version3/erp-dashboard/site/dev:<VERSION>
         ports:
         - name: http-port
           containerPort: 8080
@@ -145,9 +145,10 @@ kind: Ingress
 metadata:
   namespace: fe-site
   annotations:
-    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/rewrite-target: /
   name: fe-site
 spec:
+  ingressClassName: nginx
   tls:
   - hosts:
     - fe-site.edenfarm.tech
