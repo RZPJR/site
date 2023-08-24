@@ -418,6 +418,11 @@
                 style: 'color: white;',
                 icon: '',
                 product: {
+                    item: {
+                        item_image: {
+                            image_url: ''
+                        }
+                    },
                     product: {
                         name: '',
                         product_image: []
