@@ -2,9 +2,10 @@ apiVersion: v1
 kind: Namespace
 metadata:
   name: fe-site
+  labels:
+    app: fe-site
 
 ---
-
 apiVersion: v1
 kind: Secret
 metadata:
@@ -41,49 +42,49 @@ spec:
       - name: registry
       containers:
       - name: fe-site
-        image: git.edenfarm.id:5050/project-version3/erp-dashboard/site/dev:<VERSION>
+        image: git.edenfarm.id:5050/project-version3/erp-dashboard/site/uat:<VERSION>
         ports:
-        - name: http-port
-          containerPort: 8080
+          - name: http-port
+            containerPort: 8080
         imagePullPolicy: Always
         resources:
           requests:
             memory: 50Mi
             cpu: 15m
           limits:
-            memory: 150Mi
-            cpu: 100m
+            memory: 350Mi
+            cpu: 200m
         volumeMounts:
         - name: tz-config
           mountPath: /etc/localtime
       volumes:
-      - name: tz-config
-        hostPath:
-          path: /usr/share/zoneinfo/Asia/Jakarta
-          type: File
-          # tolerations:
-          # - key: instance_type
-          #   value: service
-          #   effect: NoSchedule
-          #   operator: Equal
-          # affinity:
-          #   nodeAffinity:
-          #     requiredDuringSchedulingIgnoredDuringExecution:
-          #       nodeSelectorTerms:
-          #       - matchExpressions:
-          #         - key: role
-          #           operator: In
-          #           values:
-          #           - devops
-          #   podAntiAffinity:
-          #     requiredDuringSchedulingIgnoredDuringExecution:
-          #     - labelSelector:
-          #         matchExpressions:
-          #         - key: app
-          #           operator: In
-          #           values:
-          #           - fe-site
-          #       topologyKey: kubernetes.io/hostname
+        - name: tz-config
+          hostPath:
+            path: /usr/share/zoneinfo/Asia/Jakarta
+            type: File
+      # tolerations:
+      # - key: instance_type
+      #   value: service
+      #   effect: NoSchedule
+      #   operator: Equal
+      # affinity:
+      #   nodeAffinity:
+      #     requiredDuringSchedulingIgnoredDuringExecution:
+      #       nodeSelectorTerms:
+      #       - matchExpressions:
+      #         - key: role
+      #           operator: In
+      #           values:
+      #           - devops
+      #   podAntiAffinity:
+      #     requiredDuringSchedulingIgnoredDuringExecution:
+      #     - labelSelector:
+      #         matchExpressions:
+      #         - key: app
+      #           operator: In
+      #           values:
+      #           - fe-site
+      #       topologyKey: kubernetes.io/hostname
 ---
 apiVersion: v1
 kind: Service
@@ -134,7 +135,7 @@ metadata:
   namespace: fe-site
 spec:
   dnsNames:
-  - fe-site.edenfarm.tech
+    - uat-fe-site.edenfarm.tech
   secretName: fe-site-tls
   issuerRef:
     name: letsencrypt-cluster-issuer
@@ -145,16 +146,15 @@ kind: Ingress
 metadata:
   namespace: fe-site
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
+    kubernetes.io/ingress.class: "nginx"
   name: fe-site
 spec:
-  ingressClassName: nginx
   tls:
   - hosts:
-    - fe-site.edenfarm.tech
+    - uat-fe-site.edenfarm.tech
     secretName: fe-site-tls
   rules:
-  - host: fe-site.edenfarm.tech
+  - host: uat-fe-site.edenfarm.tech
     http:
       paths:
       - path: /
