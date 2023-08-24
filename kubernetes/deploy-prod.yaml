@@ -1,3 +1,18 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: fe-site
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: registry
+  namespace: fe-site
+data:
+  .dockerconfigjson: ewoJImF1dGhzIjogewoJCSJnaXQuZWRlbmZhcm0uaWQ6NTA1MCI6IHsKCQkJImF1dGgiOiAiYkdsdVoyZHZPbnBDU2xwTldYRk9OVlJWT0ZaNlJ6YzRhRzloIgoJCX0KCX0KfQ==
+type: kubernetes.io/dockerconfigjson
+
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -45,29 +60,29 @@ spec:
           hostPath:
             path: /usr/share/zoneinfo/Asia/Jakarta
             type: File
-      tolerations:
-      - key: instance_type
-        value: service
-        effect: NoSchedule
-        operator: Equal
-      affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-            - matchExpressions:
-              - key: role
-                operator: In
-                values:
-                - devops
-        podAntiAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-          - labelSelector:
-              matchExpressions:
-              - key: app
-                operator: In
-                values:
-                - fe-site
-            topologyKey: kubernetes.io/hostname
+      # tolerations:
+      # - key: instance_type
+      #   value: service
+      #   effect: NoSchedule
+      #   operator: Equal
+      # affinity:
+      #   nodeAffinity:
+      #     requiredDuringSchedulingIgnoredDuringExecution:
+      #       nodeSelectorTerms:
+      #       - matchExpressions:
+      #         - key: role
+      #           operator: In
+      #           values:
+      #           - devops
+      #   podAntiAffinity:
+      #     requiredDuringSchedulingIgnoredDuringExecution:
+      #     - labelSelector:
+      #         matchExpressions:
+      #         - key: app
+      #           operator: In
+      #           values:
+      #           - fe-site
+      #       topologyKey: kubernetes.io/hostname
 ---
 apiVersion: v1
 kind: Service
@@ -85,7 +100,7 @@ spec:
   selector:
     app: fe-site
 ---
-apiVersion: autoscaling/v2beta2
+apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: hpa-fe-site
@@ -129,9 +144,10 @@ kind: Ingress
 metadata:
   namespace: fe-site
   annotations:
-    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/rewrite-target: /
   name: fe-site
 spec:
+  ingressClassName: nginx
   tls:
   - hosts:
     - fe-site.edenfarm.id
