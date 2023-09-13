@@ -16,7 +16,9 @@ stages:
 
 before_script:
   - >
-    if [ "$CI_COMMIT_BRANCH" == "uat" ]; then 
+    if [ "$CI_COMMIT_BRANCH" == "master" ]; then 
+      cp $ENV_PROD .env
+    elif [ "$CI_COMMIT_BRANCH" == "uat" ]; then 
       cp $ENV_UAT .env
     else
       cp $ENV .env
