@@ -1,6 +1,8 @@
 module.exports = {
+  productionSourceMap: true,
   lintOnSave: false,
   configureWebpack: {
+    mode: 'production',
     devServer: {
       headers: {
         "Access-Control-Allow-Origin": "*"
